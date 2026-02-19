@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send } from "lucide-react";
 import { sendToWhatsApp, buildCryptoMessage } from "@/lib/whatsapp";
+import Footer from "@/components/Footer";
 import logo from "@/assets/logo.jpeg";
 
 const CRYPTOS = [
@@ -101,6 +102,7 @@ const CryptoTrade = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Gift, Send } from "lucide-react";
 import { sendToWhatsApp, buildGiftCardMessage } from "@/lib/whatsapp";
+import Footer from "@/components/Footer";
 import logo from "@/assets/logo.jpeg";
 
 const GIFT_CARDS = [
@@ -104,6 +105,7 @@ const GiftCardTrade = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
