@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, Phone, MessageCircle } from "lucide-react";
+import { Gift, Bitcoin, Phone, MessageCircle, Shield, CheckCircle } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import TradeCard from "@/components/TradeCard";
+import Footer from "@/components/Footer";
 import logo from "@/assets/logo.jpeg";
 
 const Index = () => {
@@ -19,14 +21,18 @@ const Index = () => {
           <h1 className="font-display text-3xl font-bold text-foreground mb-2">
             SwiftChain X
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-sm mb-3">
             Fast & secure gift card and crypto trading. Choose what you'd like to do below.
           </p>
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <Shield size={12} />
+            Insured & Verified Exchanges
+          </div>
         </div>
       </div>
 
       {/* Trade Options */}
-      <div className="mx-auto max-w-lg px-4 -mt-2 pb-8">
+      <div className="mx-auto max-w-lg px-4 -mt-2 pb-0">
         <div className="grid gap-4">
           <TradeCard
             icon={<Gift size={24} />}
@@ -75,33 +81,63 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Contact */}
-        <div className="mt-6 rounded-xl border border-border bg-card p-5 text-center shadow-[var(--shadow-card)]">
-          <p className="text-sm font-medium text-card-foreground mb-3">Contact us directly</p>
-          <div className="flex items-center justify-center gap-4">
-            <a
-              href="https://wa.me/233555098098"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-all"
-            >
-              <MessageCircle size={16} />
-              WhatsApp
-            </a>
-            <a
-              href="tel:+233555098098"
-              className="flex items-center gap-2 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground transition-all"
-            >
-              <Phone size={16} />
-              +233 555 098 098
-            </a>
+        {/* Why SwiftChain X */}
+        <div className="mt-6 rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+          <h2 className="font-display text-base font-bold text-card-foreground mb-4 text-center">Why SwiftChain X?</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              "Personally verified trades",
+              "Insured crypto exchanges",
+              "Competitive rates daily",
+              "Fast WhatsApp support",
+            ].map((item) => (
+              <div key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+                <CheckCircle size={14} className="mt-0.5 shrink-0 text-primary" />
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          © 2026 SwiftChain X. All trades verified personally.
-        </p>
+        {/* FAQ */}
+        <div className="mt-6 rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+          <h2 className="font-display text-base font-bold text-card-foreground mb-2 text-center">Frequently Asked Questions</h2>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="how">
+              <AccordionTrigger className="text-sm text-card-foreground">How does trading work?</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                Simply select whether you want to trade gift cards or crypto, fill in the details, and you'll be redirected to our WhatsApp where we verify and complete the trade personally. It's fast, safe, and transparent.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="rates">
+              <AccordionTrigger className="text-sm text-card-foreground">How do I check current rates?</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                Join our WhatsApp channel for the latest daily rates on all gift cards and cryptocurrencies. Rates are confirmed before any trade is finalized.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="safe">
+              <AccordionTrigger className="text-sm text-card-foreground">Is it safe to trade here?</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                Yes! Every trade is personally verified by our team via WhatsApp. We insure all crypto exchanges and have a dispute resolution process in place. Your security is our top priority.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="cards">
+              <AccordionTrigger className="text-sm text-card-foreground">Which gift cards do you accept?</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                We accept Amazon, iTunes/Apple, Google Play, Steam, Walmart, eBay, Nike, Sephora, MoneyPak, Vanilla Visa, Vanilla Mastercard, Visa & Mastercard gift cards, American Express, and many more. Contact us for any card not listed.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="time">
+              <AccordionTrigger className="text-sm text-card-foreground">How long does a trade take?</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground">
+                Most trades are completed within 5–15 minutes once confirmed on WhatsApp. Crypto transfers may take slightly longer depending on network congestion.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 };
