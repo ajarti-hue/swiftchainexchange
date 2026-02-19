@@ -6,7 +6,10 @@ import logo from "@/assets/logo.jpeg";
 
 const GIFT_CARDS = [
   "Amazon", "iTunes/Apple", "Google Play", "Steam", "Walmart",
-  "eBay", "Nike", "Sephora", "Vanilla Visa", "Razer Gold", "Other"
+  "eBay", "Nike", "Sephora", "Razer Gold",
+  "MoneyPak", "Vanilla Visa", "Vanilla Mastercard",
+  "Visa Gift Card", "Mastercard Gift Card",
+  "American Express", "Target", "Best Buy", "Nordstrom", "Other"
 ];
 
 const TRADE_TYPES = ["Buy", "Sell"];

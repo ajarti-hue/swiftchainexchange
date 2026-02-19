@@ -42,8 +42,41 @@ const Index = () => {
           />
         </div>
 
+        {/* Crypto Promo Box */}
+        <div className="mt-6 relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-6 shadow-[var(--shadow-card)]">
+          <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-primary/10 blur-2xl" />
+          <div className="absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-accent/10 blur-xl" />
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary" style={{ transform: "perspective(400px) rotateY(-8deg) rotateX(5deg)", boxShadow: "4px 4px 12px hsl(215 60% 45% / 0.15), -2px -2px 6px hsl(0 0% 100% / 0.3)" }}>
+                  <Bitcoin size={22} />
+                </div>
+                <h3 className="font-display text-base font-bold text-card-foreground">Crypto & Gift Cards</h3>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                🔥 Check our latest rates on WhatsApp before you trade! Never miss a great deal.
+              </p>
+              <a
+                href="https://whatsapp.com/channel/0029Vb7LE6T89ingo3wmca3s"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[hsl(142_70%_45%)] px-3.5 py-2 text-xs font-semibold text-white shadow-md transition-all hover:opacity-90"
+              >
+                <MessageCircle size={14} />
+                Join Our WhatsApp Channel
+              </a>
+            </div>
+            <div className="hidden sm:flex flex-col items-center gap-1 text-primary/60" style={{ transform: "perspective(600px) rotateY(-12deg) rotateX(8deg)" }}>
+              <div className="rounded-xl bg-primary/10 p-3 shadow-[2px_4px_12px_hsl(215_60%_45%/0.12)]">
+                <Bitcoin size={32} className="text-primary" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Contact */}
-        <div className="mt-8 rounded-xl border border-border bg-card p-5 text-center shadow-[var(--shadow-card)]">
+        <div className="mt-6 rounded-xl border border-border bg-card p-5 text-center shadow-[var(--shadow-card)]">
           <p className="text-sm font-medium text-card-foreground mb-3">Contact us directly</p>
           <div className="flex items-center justify-center gap-4">
             <a
