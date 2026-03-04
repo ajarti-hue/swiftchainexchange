@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Bitcoin, Phone, MessageCircle, Shield, CheckCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import TradeCard from "@/components/TradeCard";
+import ReviewsSection from "@/components/ReviewsSection";
+import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
 import logo from "@/assets/logo.jpeg";
 
@@ -98,6 +100,12 @@ const Index = () => {
             ))}
           </div>
         </div>
+
+        {/* Rewards Banner */}
+        <RewardsBanner />
+
+        {/* Customer Reviews */}
+        <ReviewsSection />
 
         {/* FAQ */}
         <div className="mt-6 rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
