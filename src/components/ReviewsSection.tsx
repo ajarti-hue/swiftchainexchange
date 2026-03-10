@@ -1,62 +1,20 @@
 import { useState, useEffect } from "react";
-import { Star, Send, Gift } from "lucide-react";
+import { Star, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Review {
   id: string;
   name: string;
   rating: number;
   comment: string;
-  date: string;
-  tradeType: string;
+  trade_type: string;
+  created_at: string;
 }
-
-const SEED_REVIEWS: Review[] = [
-  {
-    id: "1",
-    name: "Kwame A.",
-    rating: 5,
-    comment: "Traded my Amazon gift card in under 10 minutes. Best rates I've found anywhere. Will definitely come back!",
-    date: "2026-02-28",
-    tradeType: "Gift Card",
-  },
-  {
-    id: "2",
-    name: "Ama B.",
-    rating: 5,
-    comment: "Sold USDT quickly and got paid instantly. Very professional and trustworthy service.",
-    date: "2026-02-25",
-    tradeType: "Crypto",
-  },
-  {
-    id: "3",
-    name: "Yaw M.",
-    rating: 4,
-    comment: "Great experience buying Bitcoin. The WhatsApp support made everything easy to follow.",
-    date: "2026-02-20",
-    tradeType: "Crypto",
-  },
-  {
-    id: "4",
-    name: "Efua K.",
-    rating: 5,
-    comment: "I've done 5 trades so far and earned bonus rewards. SwiftChain X is my go-to for gift cards!",
-    date: "2026-03-01",
-    tradeType: "Gift Card",
-  },
-];
-
-const STORAGE_KEY = "swiftchain_reviews";
-
-const getReviews = (): Review[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return [...SEED_REVIEWS, ...JSON.parse(stored)];
-  } catch {}
-  return SEED_REVIEWS;
-};
 
 const StarRating = ({ rating, onChange }: { rating: number; onChange?: (r: number) => void }) => (
   <div className="flex gap-0.5">
@@ -72,37 +30,60 @@ const StarRating = ({ rating, onChange }: { rating: number; onChange?: (r: numbe
 );
 
 const ReviewsSection = () => {
-  const [reviews, setReviews] = useState<Review[]>(getReviews);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [tradeType, setTradeType] = useState("Gift Card");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    const { data } = await supabase
+      .from("reviews")
+      .select("id, name, rating, comment, trade_type, created_at")
+      .order("created_at", { ascending: false });
+    if (data) setReviews(data);
+  };
+
+  const handleSubmit = async () => {
     if (!name.trim() || !comment.trim()) return;
-    const newReview: Review = {
-      id: Date.now().toString(),
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please create an account or sign in to leave a review.", variant: "destructive" });
+      return;
+    }
+
+    setSubmitting(true);
+    const { error } = await supabase.from("reviews").insert({
+      user_id: user.id,
       name: name.trim().slice(0, 50),
       rating,
       comment: comment.trim().slice(0, 300),
-      date: new Date().toISOString().split("T")[0],
-      tradeType,
-    };
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const userReviews = stored ? JSON.parse(stored) : [];
-      userReviews.push(newReview);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(userReviews));
-    } catch {}
-    setReviews((prev) => [...prev, newReview]);
-    setName("");
-    setComment("");
-    setRating(5);
-    setShowForm(false);
+      trade_type: tradeType,
+    });
+
+    if (error) {
+      toast({ title: "Error", description: "Could not submit review. Please try again.", variant: "destructive" });
+    } else {
+      toast({ title: "Review submitted!", description: "Thanks for your feedback." });
+      setName("");
+      setComment("");
+      setRating(5);
+      setShowForm(false);
+      fetchReviews();
+    }
+    setSubmitting(false);
   };
 
-  const avgRating = (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1);
+  const avgRating = reviews.length > 0
+    ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1)
+    : "0";
 
   return (
     <div className="mt-6 rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
@@ -115,12 +96,7 @@ const ReviewsSection = () => {
             <span className="text-xs text-muted-foreground">{avgRating} · {reviews.length} reviews</span>
           </div>
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          className="text-xs"
-          onClick={() => setShowForm(!showForm)}
-        >
+        <Button size="sm" variant="outline" className="text-xs" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Leave Review"}
         </Button>
       </div>
@@ -128,6 +104,11 @@ const ReviewsSection = () => {
       {/* Review Form */}
       {showForm && (
         <div className="mb-4 rounded-lg border border-border bg-background p-4 space-y-3">
+          {!user && (
+            <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-2">
+              You need to <a href="/auth" className="underline font-medium">sign in</a> to leave a review.
+            </p>
+          )}
           <Input
             placeholder="Your name"
             value={name}
@@ -145,9 +126,7 @@ const ReviewsSection = () => {
                 key={t}
                 onClick={() => setTradeType(t)}
                 className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                  tradeType === t
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground"
+                  tradeType === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
                 }`}
               >
                 {t}
@@ -161,35 +140,35 @@ const ReviewsSection = () => {
             maxLength={300}
             className="text-sm min-h-[60px]"
           />
-          <Button size="sm" onClick={handleSubmit} disabled={!name.trim() || !comment.trim()}>
+          <Button size="sm" onClick={handleSubmit} disabled={!name.trim() || !comment.trim() || submitting || !user}>
             <Send size={14} />
-            Submit Review
+            {submitting ? "Submitting..." : "Submit Review"}
           </Button>
         </div>
       )}
 
       {/* Reviews List */}
       <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
-        {reviews
-          .sort((a, b) => b.date.localeCompare(a.date))
-          .map((review) => (
-            <div key={review.id} className="rounded-lg border border-border bg-background p-3">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                    {review.name.charAt(0)}
-                  </div>
-                  <span className="text-sm font-medium text-card-foreground">{review.name}</span>
-                  <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">
-                    {review.tradeType}
-                  </span>
+        {reviews.map((review) => (
+          <div key={review.id} className="rounded-lg border border-border bg-background p-3">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                  {review.name.charAt(0)}
                 </div>
-                <span className="text-[10px] text-muted-foreground">{review.date}</span>
+                <span className="text-sm font-medium text-card-foreground">{review.name}</span>
+                <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">
+                  {review.trade_type}
+                </span>
               </div>
-              <StarRating rating={review.rating} />
-              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{review.comment}</p>
+              <span className="text-[10px] text-muted-foreground">
+                {new Date(review.created_at).toLocaleDateString()}
+              </span>
             </div>
-          ))}
+            <StarRating rating={review.rating} />
+            <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{review.comment}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
