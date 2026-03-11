@@ -6,6 +6,7 @@ import AboutSection from "@/components/AboutSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import logo from "@/assets/logo.jpeg";
 
