@@ -77,10 +77,10 @@ const Auth = () => {
         <div className="text-center mb-8">
           <img src={logo} alt="SwiftChain X" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
           <h1 className="font-display text-2xl font-bold text-foreground">
-            {isSignUp ? "Create Account" : "Welcome Back"}
+            {isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Welcome Back"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your SwiftChain X account"}
+            {isForgotPassword ? "Enter your email to receive a reset link" : isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your SwiftChain X account"}
           </p>
         </div>
 
