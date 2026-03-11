@@ -9,7 +9,9 @@ import Index from "./pages/Index";
 import GiftCardTrade from "./pages/GiftCardTrade";
 import CryptoTrade from "./pages/CryptoTrade";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Account from "./pages/Account";
+import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
@@ -29,7 +31,9 @@ const App = () => (
             <Route path="/gift-card" element={<GiftCardTrade />} />
             <Route path="/crypto" element={<CryptoTrade />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />

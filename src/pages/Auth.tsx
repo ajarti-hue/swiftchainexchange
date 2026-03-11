@@ -11,12 +11,33 @@ import logo from "@/assets/logo.jpeg";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({ title: "Enter your email", description: "Please enter your email address first.", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({ title: "Check your email", description: "We sent you a password reset link." });
+      setIsForgotPassword(false);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,10 +77,10 @@ const Auth = () => {
         <div className="text-center mb-8">
           <img src={logo} alt="SwiftChain X" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
           <h1 className="font-display text-2xl font-bold text-foreground">
-            {isSignUp ? "Create Account" : "Welcome Back"}
+            {isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Welcome Back"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your SwiftChain X account"}
+            {isForgotPassword ? "Enter your email to receive a reset link" : isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your SwiftChain X account"}
           </p>
         </div>
 
@@ -90,23 +111,33 @@ const Auth = () => {
                 className="mt-1"
               />
             </div>
-            <div>
-              <Label htmlFor="password" className="text-card-foreground">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={6}
-                className="mt-1"
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {isSignUp ? <UserPlus size={16} /> : <LogIn size={16} />}
-              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
-            </Button>
+            {!isSignUp && !isForgotPassword && (
+              <div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-card-foreground">Password</Label>
+                  <button type="button" onClick={() => setIsForgotPassword(true)} className="text-xs text-primary hover:underline">
+                    Forgot password?
+                  </button>
+                </div>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-1" />
+              </div>
+            )}
+            {isSignUp && (
+              <div>
+                <Label htmlFor="password" className="text-card-foreground">Password</Label>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-1" />
+              </div>
+            )}
+            {isForgotPassword ? (
+              <Button type="button" className="w-full" disabled={loading} onClick={handleForgotPassword}>
+                {loading ? "Sending..." : "Send Reset Link"}
+              </Button>
+            ) : (
+              <Button type="submit" className="w-full" disabled={loading}>
+                {isSignUp ? <UserPlus size={16} /> : <LogIn size={16} />}
+                {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+              </Button>
+            )}
           </form>
 
           <div className="relative my-4">
@@ -140,13 +171,16 @@ const Auth = () => {
             Sign in with Google
           </Button>
 
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-primary hover:underline"
-            >
-              {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Create one"}
-            </button>
+          <div className="mt-4 text-center space-y-1">
+            {isForgotPassword ? (
+              <button onClick={() => setIsForgotPassword(false)} className="text-sm text-primary hover:underline">
+                Back to Sign In
+              </button>
+            ) : (
+              <button onClick={() => { setIsSignUp(!isSignUp); setIsForgotPassword(false); }} className="text-sm text-primary hover:underline">
+                {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Create one"}
+              </button>
+            )}
           </div>
         </div>
 
