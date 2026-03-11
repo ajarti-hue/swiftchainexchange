@@ -111,23 +111,33 @@ const Auth = () => {
                 className="mt-1"
               />
             </div>
-            <div>
-              <Label htmlFor="password" className="text-card-foreground">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={6}
-                className="mt-1"
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {isSignUp ? <UserPlus size={16} /> : <LogIn size={16} />}
-              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
-            </Button>
+            {!isSignUp && !isForgotPassword && (
+              <div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-card-foreground">Password</Label>
+                  <button type="button" onClick={() => setIsForgotPassword(true)} className="text-xs text-primary hover:underline">
+                    Forgot password?
+                  </button>
+                </div>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-1" />
+              </div>
+            )}
+            {isSignUp && (
+              <div>
+                <Label htmlFor="password" className="text-card-foreground">Password</Label>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-1" />
+              </div>
+            )}
+            {isForgotPassword ? (
+              <Button type="button" className="w-full" disabled={loading} onClick={handleForgotPassword}>
+                {loading ? "Sending..." : "Send Reset Link"}
+              </Button>
+            ) : (
+              <Button type="submit" className="w-full" disabled={loading}>
+                {isSignUp ? <UserPlus size={16} /> : <LogIn size={16} />}
+                {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+              </Button>
+            )}
           </form>
 
           <div className="relative my-4">
