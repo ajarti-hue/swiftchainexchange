@@ -6,6 +6,7 @@ import AboutSection from "@/components/AboutSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import logo from "@/assets/logo.jpeg";
 
@@ -22,7 +23,8 @@ const Index = () => {
             <img src={logo} alt="SwiftChain X" className="h-10 w-10 rounded-xl object-cover" />
             <span className="font-display text-lg font-bold text-foreground hidden sm:inline">SwiftChain X</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <a
               href="https://whatsapp.com/channel/0029Vb7LE6T89ingo3wmca3s"
               target="_blank"
