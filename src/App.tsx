@@ -31,7 +31,9 @@ const App = () => (
             <Route path="/gift-card" element={<GiftCardTrade />} />
             <Route path="/crypto" element={<CryptoTrade />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
