@@ -171,13 +171,16 @@ const Auth = () => {
             Sign in with Google
           </Button>
 
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-primary hover:underline"
-            >
-              {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Create one"}
-            </button>
+          <div className="mt-4 text-center space-y-1">
+            {isForgotPassword ? (
+              <button onClick={() => setIsForgotPassword(false)} className="text-sm text-primary hover:underline">
+                Back to Sign In
+              </button>
+            ) : (
+              <button onClick={() => { setIsSignUp(!isSignUp); setIsForgotPassword(false); }} className="text-sm text-primary hover:underline">
+                {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Create one"}
+              </button>
+            )}
           </div>
         </div>
 
