@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight } from "lucide-react";
+import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CryptoPrices from "@/components/CryptoPrices";
 import AboutSection from "@/components/AboutSection";
@@ -8,11 +8,24 @@ import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 import logo from "@/assets/logo.jpeg";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+        setIsAdmin(!!data);
+      });
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
