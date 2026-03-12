@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, RefreshCw } from "lucide-react";
+import { TrendingUp, TrendingDown, RefreshCw, ExternalLink, X, Newspaper } from "lucide-react";
 
 interface CoinData {
   id: string;
@@ -10,12 +10,22 @@ interface CoinData {
   image: string;
 }
 
+interface NewsItem {
+  title: string;
+  url: string;
+  source: string;
+  published_at: string;
+}
+
 const COINS = ["bitcoin", "ethereum", "bitcoin-cash", "ripple", "tether", "litecoin", "stellar", "dash"];
 
 const CryptoPrices = () => {
   const [coins, setCoins] = useState<CoinData[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [selectedCoin, setSelectedCoin] = useState<CoinData | null>(null);
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(false);
 
   const fetchPrices = async () => {
     try {
@@ -32,6 +42,50 @@ const CryptoPrices = () => {
       console.error("Failed to fetch crypto prices", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNews = async (coin: CoinData) => {
+    setSelectedCoin(coin);
+    setNewsLoading(true);
+    setNews([]);
+    try {
+      // Use CoinGecko's status updates or a free news proxy
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/coins/${coin.id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const description = data.description?.en || "";
+        // Build pseudo-news from coin info + links
+        const links: NewsItem[] = [];
+        if (data.links?.homepage?.[0]) {
+          links.push({ title: `${coin.name} Official Website`, url: data.links.homepage[0], source: "Official", published_at: "" });
+        }
+        if (data.links?.blockchain_site?.[0]) {
+          links.push({ title: `${coin.name} on Blockchain Explorer`, url: data.links.blockchain_site[0], source: "Explorer", published_at: "" });
+        }
+        if (data.links?.subreddit_url) {
+          links.push({ title: `${coin.name} Reddit Community`, url: data.links.subreddit_url, source: "Reddit", published_at: "" });
+        }
+        if (data.links?.repos_url?.github?.[0]) {
+          links.push({ title: `${coin.name} GitHub Repository`, url: data.links.repos_url.github[0], source: "GitHub", published_at: "" });
+        }
+        // Add a CoinGecko page link
+        links.push({ title: `${coin.name} on CoinGecko`, url: `https://www.coingecko.com/en/coins/${coin.id}`, source: "CoinGecko", published_at: "" });
+        // Add a Google News search link
+        links.push({ title: `Latest ${coin.name} News on Google`, url: `https://news.google.com/search?q=${encodeURIComponent(coin.name + " crypto")}`, source: "Google News", published_at: "" });
+        setNews(links);
+      }
+    } catch (err) {
+      console.error("Failed to fetch news", err);
+      // Fallback links
+      setNews([
+        { title: `${coin.name} on CoinGecko`, url: `https://www.coingecko.com/en/coins/${coin.id}`, source: "CoinGecko", published_at: "" },
+        { title: `Latest ${coin.name} News`, url: `https://news.google.com/search?q=${encodeURIComponent(coin.name + " crypto")}`, source: "Google News", published_at: "" },
+      ]);
+    } finally {
+      setNewsLoading(false);
     }
   };
 
@@ -76,16 +130,18 @@ const CryptoPrices = () => {
         {coins.map((coin) => {
           const isPositive = coin.price_change_percentage_24h >= 0;
           return (
-            <div
+            <button
               key={coin.id}
-              className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-button)] transition-all duration-300"
+              onClick={() => fetchNews(coin)}
+              className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-105 hover:shadow-[var(--shadow-button)] hover:border-primary/40 cursor-pointer text-left group"
             >
               <div className="flex items-center gap-2.5 mb-3">
-                <img src={coin.image} alt={coin.name} className="h-8 w-8 rounded-full" />
+                <img src={coin.image} alt={coin.name} className="h-8 w-8 rounded-full transition-transform duration-300 group-hover:scale-110" />
                 <div>
                   <span className="text-sm font-semibold text-card-foreground">{coin.name}</span>
                   <span className="ml-1.5 text-xs font-bold text-muted-foreground uppercase">{coin.symbol}</span>
                 </div>
+                <Newspaper size={14} className="ml-auto text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="flex items-end justify-between">
                 <span className="text-lg font-bold text-card-foreground font-display">
@@ -96,10 +152,60 @@ const CryptoPrices = () => {
                   {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
+
+      {/* News Dialog */}
+      {selectedCoin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedCoin(null)}>
+          <div
+            className="relative mx-4 w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedCoin(null)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X size={18} />
+            </button>
+            <div className="flex items-center gap-3 mb-5">
+              <img src={selectedCoin.image} alt={selectedCoin.name} className="h-10 w-10 rounded-full" />
+              <div>
+                <h3 className="font-display text-lg font-bold text-card-foreground">{selectedCoin.name}</h3>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">{selectedCoin.symbol} · {formatPrice(selectedCoin.current_price)}</p>
+              </div>
+            </div>
+            <h4 className="text-sm font-semibold text-card-foreground mb-3">Resources & News</h4>
+            {newsLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {news.map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-border p-3 hover:bg-muted/50 transition-colors group/link"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-card-foreground truncate">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">{item.source}</p>
+                    </div>
+                    <ExternalLink size={14} className="text-muted-foreground shrink-0 group-hover/link:text-primary transition-colors" />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

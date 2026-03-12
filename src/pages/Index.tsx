@@ -75,18 +75,37 @@ const Index = () => {
               Buy & Sell Bitcoin, Perfect Money & Other Cryptocurrencies, 24/7 easily and swiftly in Ghana 🇬🇭 using Mobile Money, Bank Transfer or Cash.
             </p>
             <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => navigate("/auth")}
-                className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 transition-all"
-              >
-                Register / Join Us <ArrowRight size={16} />
-              </button>
-              <button
-                onClick={() => navigate("/auth")}
-                className="flex items-center gap-2 rounded-xl border-2 border-primary bg-card px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5 transition-all"
-              >
-                Login For Best Rates
-              </button>
+              {user ? (
+                <>
+                  <button
+                    onClick={() => navigate("/gift-card")}
+                    className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 transition-all"
+                  >
+                    Trade Gift Cards <ArrowRight size={16} />
+                  </button>
+                  <button
+                    onClick={() => navigate("/crypto")}
+                    className="flex items-center gap-2 rounded-xl border-2 border-primary bg-card px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5 transition-all"
+                  >
+                    Trade Crypto <ArrowRight size={16} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate("/auth")}
+                    className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 transition-all"
+                  >
+                    Register / Join Us <ArrowRight size={16} />
+                  </button>
+                  <button
+                    onClick={() => navigate("/auth")}
+                    className="flex items-center gap-2 rounded-xl border-2 border-primary bg-card px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5 transition-all"
+                  >
+                    Login For Best Rates
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
