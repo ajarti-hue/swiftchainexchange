@@ -47,12 +47,22 @@ const Index = () => {
               <MessageCircle size={14} /> WhatsApp Channel
             </a>
             {user ? (
-              <button
-                onClick={() => navigate("/account")}
-                className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-[var(--shadow-button)]"
-              >
-                <User size={14} /> My Account
-              </button>
+              <div className="flex items-center gap-2">
+                {isAdmin && (
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground hover:bg-accent/80 transition-all"
+                  >
+                    <Settings size={14} /> Admin
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate("/account")}
+                  className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-[var(--shadow-button)]"
+                >
+                  <User size={14} /> My Account
+                </button>
+              </div>
             ) : (
               <div className="flex items-center gap-2">
                 <button
