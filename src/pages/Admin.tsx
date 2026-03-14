@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 
@@ -51,6 +51,8 @@ const Admin = () => {
   const [reviews, setReviews] = useState<AdminReview[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingData, setLoadingData] = useState(true);
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<{ total_trades: number; rewards_balance: number }>({ total_trades: 0, rewards_balance: 0 });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -62,10 +64,7 @@ const Admin = () => {
 
   const checkAdmin = async () => {
     const { data } = await supabase.rpc("has_role", { _user_id: user!.id, _role: "admin" });
-    if (!data) {
-      setIsAdmin(false);
-      return;
-    }
+    if (!data) { setIsAdmin(false); return; }
     setIsAdmin(true);
     fetchAll();
   };
@@ -100,6 +99,25 @@ const Admin = () => {
     } else {
       toast({ title: "Review deleted" });
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    }
+  };
+
+  const startEditUser = (p: AdminProfile) => {
+    setEditingUser(p.id);
+    setEditValues({ total_trades: p.total_trades, rewards_balance: p.rewards_balance });
+  };
+
+  const saveUserEdit = async (profileId: string) => {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ total_trades: editValues.total_trades, rewards_balance: editValues.rewards_balance })
+      .eq("id", profileId);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "User updated" });
+      setProfiles((prev) => prev.map((p) => p.id === profileId ? { ...p, ...editValues } : p));
+      setEditingUser(null);
     }
   };
 
@@ -152,10 +170,10 @@ const Admin = () => {
       {/* Admin Nav */}
       <nav className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img src={logo} alt="SwiftChain X" className="h-8 w-8 rounded-lg object-cover" />
             <span className="font-display text-sm font-bold text-foreground">Admin Panel</span>
-          </div>
+          </button>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
@@ -284,6 +302,7 @@ const Admin = () => {
                         <th className="text-left p-3 font-semibold text-card-foreground">Trades</th>
                         <th className="text-left p-3 font-semibold text-card-foreground">Rewards</th>
                         <th className="text-left p-3 font-semibold text-card-foreground">Joined</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Edit</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -291,13 +310,52 @@ const Admin = () => {
                         <tr key={p.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                           <td className="p-3 text-card-foreground font-medium">{p.display_name}</td>
                           <td className="p-3 text-muted-foreground">{p.phone || "—"}</td>
-                          <td className="p-3 text-card-foreground">{p.total_trades}</td>
-                          <td className="p-3 text-primary font-medium">${p.rewards_balance}</td>
+                          <td className="p-3 text-card-foreground">
+                            {editingUser === p.id ? (
+                              <Input
+                                type="number"
+                                value={editValues.total_trades}
+                                onChange={(e) => setEditValues((v) => ({ ...v, total_trades: parseInt(e.target.value) || 0 }))}
+                                className="w-20 h-7 text-xs"
+                              />
+                            ) : (
+                              p.total_trades
+                            )}
+                          </td>
+                          <td className="p-3">
+                            {editingUser === p.id ? (
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={editValues.rewards_balance}
+                                onChange={(e) => setEditValues((v) => ({ ...v, rewards_balance: parseFloat(e.target.value) || 0 }))}
+                                className="w-24 h-7 text-xs"
+                              />
+                            ) : (
+                              <span className="text-primary font-medium">${p.rewards_balance}</span>
+                            )}
+                          </td>
                           <td className="p-3 text-muted-foreground">{new Date(p.created_at).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {editingUser === p.id ? (
+                              <div className="flex gap-1">
+                                <button onClick={() => saveUserEdit(p.id)} title="Save" className="p-1 rounded hover:bg-green-100 dark:hover:bg-green-900/30 text-green-600">
+                                  <Save size={14} />
+                                </button>
+                                <button onClick={() => setEditingUser(null)} title="Cancel" className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600">
+                                  <X size={14} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button onClick={() => startEditUser(p)} title="Edit" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                <Pencil size={14} />
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                       {filteredProfiles.length === 0 && (
-                        <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No users found</td></tr>
+                        <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No users found</td></tr>
                       )}
                     </tbody>
                   </table>
