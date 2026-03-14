@@ -16,14 +16,19 @@ const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [tradeCount, setTradeCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (user) {
       supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
         setIsAdmin(!!data);
       });
+      supabase.from("profiles").select("total_trades").eq("user_id", user.id).single().then(({ data }) => {
+        if (data) setTradeCount(data.total_trades);
+      });
     } else {
       setIsAdmin(false);
+      setTradeCount(null);
     }
   }, [user]);
 
