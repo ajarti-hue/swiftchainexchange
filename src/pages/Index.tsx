@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings } from "lucide-react";
+import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CryptoPrices from "@/components/CryptoPrices";
 import AboutSection from "@/components/AboutSection";
@@ -16,14 +16,19 @@ const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [tradeCount, setTradeCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (user) {
       supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
         setIsAdmin(!!data);
       });
+      supabase.from("profiles").select("total_trades").eq("user_id", user.id).single().then(({ data }) => {
+        if (data) setTradeCount(data.total_trades);
+      });
     } else {
       setIsAdmin(false);
+      setTradeCount(null);
     }
   }, [user]);
 
@@ -32,10 +37,15 @@ const Index = () => {
       {/* Navigation Bar */}
       <nav className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img src={logo} alt="SwiftChain X" className="h-10 w-10 rounded-xl object-cover" />
             <span className="font-display text-lg font-bold text-foreground hidden sm:inline">SwiftChain X</span>
-          </div>
+          </button>
+          {user && tradeCount !== null && (
+            <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <TrendingUp size={12} /> {tradeCount} trade{tradeCount !== 1 ? "s" : ""}
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <a
