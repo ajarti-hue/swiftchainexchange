@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings } from "lucide-react";
+import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CryptoPrices from "@/components/CryptoPrices";
 import AboutSection from "@/components/AboutSection";
