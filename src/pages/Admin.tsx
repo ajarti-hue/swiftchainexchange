@@ -40,19 +40,32 @@ interface AdminReview {
   created_at: string;
 }
 
+interface CryptoRate {
+  id: string;
+  crypto_name: string;
+  crypto_symbol: string;
+  buy_rate: number;
+  sell_rate: number;
+  currency: string;
+  updated_at: string;
+}
+
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews">("trades");
+  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates">("trades");
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [trades, setTrades] = useState<AdminTrade[]>([]);
   const [reviews, setReviews] = useState<AdminReview[]>([]);
+  const [rates, setRates] = useState<CryptoRate[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingData, setLoadingData] = useState(true);
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ total_trades: number; rewards_balance: number }>({ total_trades: 0, rewards_balance: 0 });
+  const [editingRate, setEditingRate] = useState<string | null>(null);
+  const [rateEditValues, setRateEditValues] = useState<{ buy_rate: number; sell_rate: number }>({ buy_rate: 0, sell_rate: 0 });
 
   useEffect(() => {
     if (!authLoading && !user) {
