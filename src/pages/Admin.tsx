@@ -84,14 +84,16 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoadingData(true);
-    const [profilesRes, tradesRes, reviewsRes] = await Promise.all([
+    const [profilesRes, tradesRes, reviewsRes, ratesRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("trades").select("*").order("created_at", { ascending: false }),
       supabase.from("reviews").select("*").order("created_at", { ascending: false }),
+      supabase.from("crypto_rates").select("*").order("crypto_name"),
     ]);
     if (profilesRes.data) setProfiles(profilesRes.data as AdminProfile[]);
     if (tradesRes.data) setTrades(tradesRes.data as AdminTrade[]);
     if (reviewsRes.data) setReviews(reviewsRes.data as AdminReview[]);
+    if (ratesRes.data) setRates(ratesRes.data as CryptoRate[]);
     setLoadingData(false);
   };
 
