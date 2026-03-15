@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CryptoPrices from "@/components/CryptoPrices";
+import CryptoRatesSection from "@/components/CryptoRatesSection";
 import AboutSection from "@/components/AboutSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import RewardsBanner from "@/components/RewardsBanner";
@@ -144,8 +145,13 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Crypto Prices Section */}
-      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10">
+      {/* Admin-Editable Crypto Rates */}
+      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10 mb-6">
+        <CryptoRatesSection />
+      </div>
+
+      {/* Live Market Prices */}
+      <div className="mx-auto max-w-6xl px-4">
         <CryptoPrices />
       </div>
 

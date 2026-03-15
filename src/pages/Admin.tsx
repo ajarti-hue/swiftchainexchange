@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 
@@ -40,19 +40,32 @@ interface AdminReview {
   created_at: string;
 }
 
+interface CryptoRate {
+  id: string;
+  crypto_name: string;
+  crypto_symbol: string;
+  buy_rate: number;
+  sell_rate: number;
+  currency: string;
+  updated_at: string;
+}
+
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews">("trades");
+  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates">("trades");
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [trades, setTrades] = useState<AdminTrade[]>([]);
   const [reviews, setReviews] = useState<AdminReview[]>([]);
+  const [rates, setRates] = useState<CryptoRate[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingData, setLoadingData] = useState(true);
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ total_trades: number; rewards_balance: number }>({ total_trades: 0, rewards_balance: 0 });
+  const [editingRate, setEditingRate] = useState<string | null>(null);
+  const [rateEditValues, setRateEditValues] = useState<{ buy_rate: number; sell_rate: number }>({ buy_rate: 0, sell_rate: 0 });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -71,14 +84,16 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoadingData(true);
-    const [profilesRes, tradesRes, reviewsRes] = await Promise.all([
+    const [profilesRes, tradesRes, reviewsRes, ratesRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("trades").select("*").order("created_at", { ascending: false }),
       supabase.from("reviews").select("*").order("created_at", { ascending: false }),
+      supabase.from("crypto_rates").select("*").order("crypto_name"),
     ]);
     if (profilesRes.data) setProfiles(profilesRes.data as AdminProfile[]);
     if (tradesRes.data) setTrades(tradesRes.data as AdminTrade[]);
     if (reviewsRes.data) setReviews(reviewsRes.data as AdminReview[]);
+    if (ratesRes.data) setRates(ratesRes.data as CryptoRate[]);
     setLoadingData(false);
   };
 
@@ -118,6 +133,25 @@ const Admin = () => {
       toast({ title: "User updated" });
       setProfiles((prev) => prev.map((p) => p.id === profileId ? { ...p, ...editValues } : p));
       setEditingUser(null);
+    }
+  };
+
+  const startEditRate = (r: CryptoRate) => {
+    setEditingRate(r.id);
+    setRateEditValues({ buy_rate: r.buy_rate, sell_rate: r.sell_rate });
+  };
+
+  const saveRateEdit = async (rateId: string) => {
+    const { error } = await supabase
+      .from("crypto_rates")
+      .update({ buy_rate: rateEditValues.buy_rate, sell_rate: rateEditValues.sell_rate, updated_at: new Date().toISOString() })
+      .eq("id", rateId);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Rate updated" });
+      setRates((prev) => prev.map((r) => r.id === rateId ? { ...r, ...rateEditValues, updated_at: new Date().toISOString() } : r));
+      setEditingRate(null);
     }
   };
 
@@ -163,6 +197,7 @@ const Admin = () => {
     { key: "trades" as const, label: "Trades", icon: TrendingUp, count: trades.length },
     { key: "users" as const, label: "Users", icon: Users, count: profiles.length },
     { key: "reviews" as const, label: "Reviews", icon: Star, count: reviews.length },
+    { key: "rates" as const, label: "Rates", icon: ArrowUpDown, count: rates.length },
   ];
 
   return (
@@ -393,6 +428,80 @@ const Admin = () => {
                 {filteredReviews.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">No reviews found</p>
                 )}
+              </div>
+            )}
+
+            {/* Rates Tab */}
+            {activeTab === "rates" && (
+              <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="text-left p-3 font-semibold text-card-foreground">Crypto</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Symbol</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Buy Rate (GHS)</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Sell Rate (GHS)</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Updated</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rates.map((r) => (
+                        <tr key={r.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                          <td className="p-3 text-card-foreground font-medium">{r.crypto_name}</td>
+                          <td className="p-3 text-primary font-bold">{r.crypto_symbol}</td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={rateEditValues.buy_rate}
+                                onChange={(e) => setRateEditValues((v) => ({ ...v, buy_rate: parseFloat(e.target.value) || 0 }))}
+                                className="w-24 h-7 text-xs"
+                              />
+                            ) : (
+                              <span className="text-card-foreground">{r.buy_rate}</span>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={rateEditValues.sell_rate}
+                                onChange={(e) => setRateEditValues((v) => ({ ...v, sell_rate: parseFloat(e.target.value) || 0 }))}
+                                className="w-24 h-7 text-xs"
+                              />
+                            ) : (
+                              <span className="text-card-foreground">{r.sell_rate}</span>
+                            )}
+                          </td>
+                          <td className="p-3 text-muted-foreground">{new Date(r.updated_at).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <div className="flex gap-1">
+                                <button onClick={() => saveRateEdit(r.id)} title="Save" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                  <Save size={14} />
+                                </button>
+                                <button onClick={() => setEditingRate(null)} title="Cancel" className="p-1 rounded hover:bg-destructive/10 text-destructive">
+                                  <X size={14} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button onClick={() => startEditRate(r)} title="Edit rate" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                <Pencil size={14} />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {rates.length === 0 && (
+                        <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No rates configured</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </>
