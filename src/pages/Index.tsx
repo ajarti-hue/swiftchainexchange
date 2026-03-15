@@ -145,8 +145,13 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Crypto Prices Section */}
-      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10">
+      {/* Admin-Editable Crypto Rates */}
+      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10 mb-6">
+        <CryptoRatesSection />
+      </div>
+
+      {/* Live Market Prices */}
+      <div className="mx-auto max-w-6xl px-4">
         <CryptoPrices />
       </div>
 
