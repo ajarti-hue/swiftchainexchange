@@ -430,6 +430,80 @@ const Admin = () => {
                 )}
               </div>
             )}
+
+            {/* Rates Tab */}
+            {activeTab === "rates" && (
+              <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="text-left p-3 font-semibold text-card-foreground">Crypto</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Symbol</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Buy Rate (GHS)</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Sell Rate (GHS)</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Updated</th>
+                        <th className="text-left p-3 font-semibold text-card-foreground">Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rates.map((r) => (
+                        <tr key={r.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                          <td className="p-3 text-card-foreground font-medium">{r.crypto_name}</td>
+                          <td className="p-3 text-primary font-bold">{r.crypto_symbol}</td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={rateEditValues.buy_rate}
+                                onChange={(e) => setRateEditValues((v) => ({ ...v, buy_rate: parseFloat(e.target.value) || 0 }))}
+                                className="w-24 h-7 text-xs"
+                              />
+                            ) : (
+                              <span className="text-card-foreground">{r.buy_rate}</span>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={rateEditValues.sell_rate}
+                                onChange={(e) => setRateEditValues((v) => ({ ...v, sell_rate: parseFloat(e.target.value) || 0 }))}
+                                className="w-24 h-7 text-xs"
+                              />
+                            ) : (
+                              <span className="text-card-foreground">{r.sell_rate}</span>
+                            )}
+                          </td>
+                          <td className="p-3 text-muted-foreground">{new Date(r.updated_at).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {editingRate === r.id ? (
+                              <div className="flex gap-1">
+                                <button onClick={() => saveRateEdit(r.id)} title="Save" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                  <Save size={14} />
+                                </button>
+                                <button onClick={() => setEditingRate(null)} title="Cancel" className="p-1 rounded hover:bg-destructive/10 text-destructive">
+                                  <X size={14} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button onClick={() => startEditRate(r)} title="Edit rate" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                <Pencil size={14} />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {rates.length === 0 && (
+                        <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No rates configured</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
