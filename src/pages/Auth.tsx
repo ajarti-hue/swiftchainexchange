@@ -5,16 +5,19 @@ import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, LogIn, UserPlus } from "lucide-react";
+import { ArrowLeft, LogIn, UserPlus, Mail, ShieldCheck } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -54,7 +57,8 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Account created!", description: "Check your email to confirm your account." });
+        setShowOTP(true);
+        toast({ title: "Verification code sent! 📧", description: "Check your email for a 6-digit code to verify your account." });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -66,6 +70,103 @@ const Auth = () => {
       setLoading(false);
     }
   };
+
+  const handleVerifyOTP = async () => {
+    if (otpCode.length !== 6) {
+      toast({ title: "Enter full code", description: "Please enter the 6-digit code from your email.", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otpCode,
+        type: "signup",
+      });
+      if (error) throw error;
+      toast({ title: "Account verified! ✅", description: "Welcome to SwiftChain X!" });
+      navigate("/");
+    } catch (error: any) {
+      toast({ title: "Invalid code", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+      });
+      if (error) throw error;
+      toast({ title: "Code resent! 📧", description: "Check your email for a new verification code." });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // OTP Verification Screen
+  if (showOTP) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-lg px-4 py-8">
+          <button onClick={() => setShowOTP(false)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
+            <ArrowLeft size={16} /> Back
+          </button>
+
+          <div className="text-center mb-8">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+              <Mail size={28} className="text-primary" />
+            </div>
+            <h1 className="font-display text-2xl font-bold text-foreground">Verify Your Email</h1>
+            <p className="text-sm text-muted-foreground mt-2">
+              We sent a 6-digit verification code to
+            </p>
+            <p className="text-sm font-semibold text-primary mt-1">{email}</p>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+            <div className="flex flex-col items-center gap-6">
+              <InputOTP maxLength={6} value={otpCode} onChange={(value) => setOtpCode(value)}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+
+              <Button className="w-full" onClick={handleVerifyOTP} disabled={loading || otpCode.length !== 6}>
+                <ShieldCheck size={16} />
+                {loading ? "Verifying..." : "Verify & Continue"}
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">Didn't receive the code?</p>
+                <button
+                  onClick={handleResendOTP}
+                  disabled={loading}
+                  className="text-xs font-semibold text-primary hover:underline disabled:opacity-50"
+                >
+                  Resend Code
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Check your spam folder if you don't see the email.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
