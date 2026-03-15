@@ -136,6 +136,25 @@ const Admin = () => {
     }
   };
 
+  const startEditRate = (r: CryptoRate) => {
+    setEditingRate(r.id);
+    setRateEditValues({ buy_rate: r.buy_rate, sell_rate: r.sell_rate });
+  };
+
+  const saveRateEdit = async (rateId: string) => {
+    const { error } = await supabase
+      .from("crypto_rates")
+      .update({ buy_rate: rateEditValues.buy_rate, sell_rate: rateEditValues.sell_rate, updated_at: new Date().toISOString() })
+      .eq("id", rateId);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Rate updated" });
+      setRates((prev) => prev.map((r) => r.id === rateId ? { ...r, ...rateEditValues, updated_at: new Date().toISOString() } : r));
+      setEditingRate(null);
+    }
+  };
+
   if (authLoading || isAdmin === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
