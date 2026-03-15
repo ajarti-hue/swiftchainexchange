@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      crypto_rates: {
+        Row: {
+          buy_rate: number
+          crypto_name: string
+          crypto_symbol: string
+          currency: string
+          id: string
+          sell_rate: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          buy_rate?: number
+          crypto_name: string
+          crypto_symbol: string
+          currency?: string
+          id?: string
+          sell_rate?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          buy_rate?: number
+          crypto_name?: string
+          crypto_symbol?: string
+          currency?: string
+          id?: string
+          sell_rate?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
