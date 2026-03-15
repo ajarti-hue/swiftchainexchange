@@ -197,6 +197,7 @@ const Admin = () => {
     { key: "trades" as const, label: "Trades", icon: TrendingUp, count: trades.length },
     { key: "users" as const, label: "Users", icon: Users, count: profiles.length },
     { key: "reviews" as const, label: "Reviews", icon: Star, count: reviews.length },
+    { key: "rates" as const, label: "Rates", icon: ArrowUpDown, count: rates.length },
   ];
 
   return (
