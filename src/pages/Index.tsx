@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import CryptoPrices from "@/components/CryptoPrices";
-import CryptoRatesSection from "@/components/CryptoRatesSection";
+import CryptoMarketSection from "@/components/CryptoMarketSection";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import AboutSection from "@/components/AboutSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import RewardsBanner from "@/components/RewardsBanner";
@@ -145,14 +145,14 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Admin-Editable Crypto Rates */}
-      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10 mb-6">
-        <CryptoRatesSection />
+      {/* Email Verification Alert */}
+      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10 mb-4">
+        <EmailVerificationBanner />
       </div>
 
-      {/* Live Market Prices */}
-      <div className="mx-auto max-w-6xl px-4">
-        <CryptoPrices />
+      {/* Combined Crypto Rates & Market Prices */}
+      <div className="mx-auto max-w-6xl px-4 mb-6">
+        <CryptoMarketSection />
       </div>
 
       {/* Trade Options */}
