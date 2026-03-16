@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Gift, LogOut, Star, TrendingUp } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 import Footer from "@/components/Footer";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 
 interface Profile {
   display_name: string;
@@ -85,6 +86,11 @@ const Account = () => {
           <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-muted-foreground">
             <LogOut size={14} /> Sign Out
           </Button>
+        </div>
+
+        {/* Email Verification Alert */}
+        <div className="mb-4">
+          <EmailVerificationBanner />
         </div>
 
         {/* Profile Card */}
