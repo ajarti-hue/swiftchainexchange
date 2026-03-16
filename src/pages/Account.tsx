@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Gift, LogOut, Star, TrendingUp } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 import Footer from "@/components/Footer";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 
 interface Profile {
   display_name: string;
