@@ -88,6 +88,11 @@ const Account = () => {
           </Button>
         </div>
 
+        {/* Email Verification Alert */}
+        <div className="mb-4">
+          <EmailVerificationBanner />
+        </div>
+
         {/* Profile Card */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] text-center mb-6">
           <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary mb-3">
