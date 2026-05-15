@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Gift, Send } from "lucide-react";
+import { ArrowLeft, Send, MessageCircle } from "lucide-react";
 import { sendToWhatsApp, buildGiftCardMessage } from "@/lib/whatsapp";
+import { createOrder } from "@/lib/createOrder";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import logo from "@/assets/logo.jpeg";
 
@@ -17,16 +20,36 @@ const TRADE_TYPES = ["Buy", "Sell"];
 
 const GiftCardTrade = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [card, setCard] = useState("");
   const [type, setType] = useState("");
   const [amount, setAmount] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const canSubmit = card && type && amount;
 
-  const handleSubmit = () => {
+  const handleStartChat = async () => {
     if (!canSubmit) return;
-    const msg = buildGiftCardMessage(card, type, amount);
-    sendToWhatsApp(msg);
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please sign in to start an order chat." });
+      navigate("/auth");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const id = await createOrder({ trade_type: "Gift Card", action: type, item: card, amount });
+      navigate(`/chat/${id}`);
+    } catch (e: any) {
+      toast({ title: "Could not start order", description: e.message, variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleWhatsApp = () => {
+    if (!canSubmit) return;
+    sendToWhatsApp(buildGiftCardMessage(card, type, amount));
   };
 
   return (
@@ -96,12 +119,20 @@ const GiftCardTrade = () => {
 
           {/* Submit */}
           <button
-            onClick={handleSubmit}
-            disabled={!canSubmit}
+            onClick={handleStartChat}
+            disabled={!canSubmit || submitting}
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 font-display font-semibold text-primary-foreground shadow-[var(--shadow-button)] transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Send size={18} />
-            Continue on WhatsApp
+            <MessageCircle size={18} />
+            {submitting ? "Opening chat..." : "Start Order Chat"}
+          </button>
+          <button
+            onClick={handleWhatsApp}
+            disabled={!canSubmit}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-medium text-card-foreground hover:border-primary/50 transition-all disabled:opacity-40"
+          >
+            <Send size={16} />
+            Or continue on WhatsApp
           </button>
         </div>
       </div>
