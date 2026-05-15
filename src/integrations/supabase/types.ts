@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          attachment_name: string | null
+          attachment_url: string | null
+          body: string | null
+          created_at: string
+          id: string
+          read_by_admin: boolean
+          read_by_user: boolean
+          sender_id: string
+          sender_role: string
+          trade_id: string
+        }
+        Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_by_admin?: boolean
+          read_by_user?: boolean
+          sender_id: string
+          sender_role: string
+          trade_id: string
+        }
+        Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_by_admin?: boolean
+          read_by_user?: boolean
+          sender_id?: string
+          sender_role?: string
+          trade_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_trade_id_fkey"
+            columns: ["trade_id"]
+            isOneToOne: false
+            referencedRelation: "trades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crypto_rates: {
         Row: {
           buy_rate: number
@@ -113,8 +160,11 @@ export type Database = {
       trades: {
         Row: {
           action: string
+          admin_notified: boolean
           amount: number | null
+          completed_at: string | null
           created_at: string
+          customer_email: string | null
           id: string
           item: string
           reward_earned: number
@@ -124,8 +174,11 @@ export type Database = {
         }
         Insert: {
           action: string
+          admin_notified?: boolean
           amount?: number | null
+          completed_at?: string | null
           created_at?: string
+          customer_email?: string | null
           id?: string
           item: string
           reward_earned?: number
@@ -135,8 +188,11 @@ export type Database = {
         }
         Update: {
           action?: string
+          admin_notified?: boolean
           amount?: number | null
+          completed_at?: string | null
           created_at?: string
+          customer_email?: string | null
           id?: string
           item?: string
           reward_earned?: number
