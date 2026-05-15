@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Gift, LogOut, Star, TrendingUp } from "lucide-react";
+import { ArrowLeft, Gift, LogOut, Star, TrendingUp, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 import Footer from "@/components/Footer";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
@@ -148,21 +148,32 @@ const Account = () => {
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
               {trades.map((trade) => (
                 <div key={trade.id} className="flex items-center justify-between rounded-lg border border-border bg-background p-3">
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground">{trade.item}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-card-foreground truncate">{trade.item}</p>
                     <p className="text-[10px] text-muted-foreground">
                       {trade.action.toUpperCase()} · {trade.trade_type} · {new Date(trade.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="text-right">
-                    {trade.amount && <p className="text-sm font-medium text-card-foreground">${trade.amount}</p>}
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                      trade.status === "completed" ? "bg-green-100 text-green-700" :
-                      trade.status === "cancelled" ? "bg-red-100 text-red-700" :
-                      "bg-yellow-100 text-yellow-700"
-                    }`}>
-                      {trade.status}
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <div className="text-right">
+                      {trade.amount && <p className="text-sm font-medium text-card-foreground">${trade.amount}</p>}
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+                        trade.status === "completed" ? "bg-green-100 text-green-700" :
+                        trade.status === "cancelled" ? "bg-red-100 text-red-700" :
+                        "bg-yellow-100 text-yellow-700"
+                      }`}>
+                        {trade.status}
+                      </span>
+                    </div>
+                    {trade.status !== "cancelled" && (
+                      <button
+                        onClick={() => navigate(`/chat/${trade.id}`)}
+                        title="Open chat"
+                        className="p-2 rounded-lg hover:bg-primary/10 text-primary"
+                      >
+                        <MessageCircle size={16} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
