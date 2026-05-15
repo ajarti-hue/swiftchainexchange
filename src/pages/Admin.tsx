@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown, MessageCircle } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 
@@ -303,6 +303,9 @@ const Admin = () => {
                           <td className="p-3 text-muted-foreground">{new Date(trade.created_at).toLocaleDateString()}</td>
                           <td className="p-3">
                             <div className="flex gap-1">
+                              <button onClick={() => navigate(`/chat/${trade.id}`)} title="Open chat" className="p-1 rounded hover:bg-primary/10 text-primary">
+                                <MessageCircle size={14} />
+                              </button>
                               <button onClick={() => updateTradeStatus(trade.id, "completed")} title="Complete" className="p-1 rounded hover:bg-green-100 dark:hover:bg-green-900/30 text-green-600">
                                 <CheckCircle size={14} />
                               </button>
