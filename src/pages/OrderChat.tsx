@@ -290,6 +290,9 @@ const OrderChat = () => {
 
       {/* Composer */}
       <footer className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur-md">
+        <div className="mx-auto max-w-3xl px-3 pt-2 flex justify-center">
+          <PaymentMethodsPanel tradeId={order.id} senderId={user!.id} isAdmin={isAdmin} />
+        </div>
         <div className="mx-auto max-w-3xl px-3 py-3 flex items-end gap-2">
           <input ref={fileRef} type="file" hidden onChange={onFile} accept="image/*,.pdf,.doc,.docx" />
           <button
