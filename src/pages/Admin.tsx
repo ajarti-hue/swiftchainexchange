@@ -509,6 +509,11 @@ const Admin = () => {
                 </div>
               </div>
             )}
+
+            {/* Payments Tab */}
+            {activeTab === "payments" && (
+              <PaymentMethodsAdmin />
+            )}
           </>
         )}
       </div>
