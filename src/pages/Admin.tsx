@@ -5,8 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown, MessageCircle } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown, MessageCircle, Wallet } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import PaymentMethodsAdmin from "@/components/PaymentMethodsAdmin";
 import logo from "@/assets/logo.jpeg";
 
 interface AdminProfile {
