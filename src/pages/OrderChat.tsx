@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Send, Paperclip, CheckCheck, Check, CheckCircle2, MessageCircle, Loader2 } from "lucide-react";
+import PaymentMethodsPanel from "@/components/PaymentMethodsPanel";
 import logo from "@/assets/logo.jpeg";
 
 interface ChatMessage {
