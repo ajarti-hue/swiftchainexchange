@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp } from "lucide-react";
+import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp, Sparkles } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import CryptoMarketSection from "@/components/CryptoMarketSection";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
@@ -8,6 +8,9 @@ import ReviewsSection from "@/components/ReviewsSection";
 import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
 import ThemeToggle from "@/components/ThemeToggle";
+import Hero3DScene from "@/components/Hero3DScene";
+import TrustStatsBand from "@/components/TrustStatsBand";
+import PriceTicker from "@/components/PriceTicker";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -95,31 +98,35 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
-        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, hsl(var(--primary)) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(var(--accent)) 0%, transparent 50%)" }} />
-        <div className="relative mx-auto max-w-6xl px-4 py-16 lg:py-24">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary mb-6">
-              <Shield size={12} /> Trusted & Insured Exchange
+      <div className="relative overflow-hidden grain" style={{ background: "var(--gradient-hero)" }}>
+        <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl opacity-50" style={{ background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)" }} />
+        <div className="pointer-events-none absolute -bottom-40 -right-20 h-[28rem] w-[28rem] rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle, hsl(var(--accent)) 0%, transparent 70%)" }} />
+
+        <div className="relative mx-auto max-w-6xl px-4 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs font-semibold text-foreground mb-6 shadow-sm">
+              <Sparkles size={12} className="text-amber-500" /> Ghana's most trusted crypto & gift card desk
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-              Buy and Sell Bitcoin & Other Digital Currencies
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 leading-[1.05]">
+              <span className="text-foreground">Trade Crypto &</span>
+              <br />
+              <span className="text-gradient">Gift Cards in Cedis.</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mb-8 leading-relaxed max-w-xl">
-              Buy & Sell Bitcoin, Perfect Money & Other Cryptocurrencies, 24/7 easily and swiftly in Ghana 🇬🇭 using Mobile Money, Bank Transfer or Cash.
+              Instant Mobile Money payouts. Personally verified trades. Real human support around the clock — Bitcoin, USDT, Ethereum, Perfect Money, Amazon, iTunes, Steam and 50+ more.
             </p>
             <div className="flex flex-wrap gap-3">
               {user ? (
                 <>
                   <button
                     onClick={() => navigate("/gift-card")}
-                    className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
                   >
-                    Trade Gift Cards <ArrowRight size={16} />
+                    Trade Gift Cards <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                   <button
                     onClick={() => navigate("/crypto")}
-                    className="flex items-center gap-2 rounded-xl border-2 border-primary bg-card px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5 transition-all"
+                    className="flex items-center gap-2 rounded-xl glass px-6 py-3.5 text-sm font-bold text-foreground hover:bg-card transition-all"
                   >
                     Trade Crypto <ArrowRight size={16} />
                   </button>
@@ -128,25 +135,47 @@ const Index = () => {
                 <>
                   <button
                     onClick={() => navigate("/auth")}
-                    className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
                   >
-                    Register / Join Us <ArrowRight size={16} />
+                    Register / Join Us <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                   <button
                     onClick={() => navigate("/auth")}
-                    className="flex items-center gap-2 rounded-xl border-2 border-primary bg-card px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5 transition-all"
+                    className="flex items-center gap-2 rounded-xl glass px-6 py-3.5 text-sm font-bold text-foreground hover:bg-card transition-all"
                   >
                     Login For Best Rates
                   </button>
                 </>
               )}
             </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-muted-foreground">
+              <div className="flex items-center gap-1.5"><Shield size={12} className="text-primary" /> Insured</div>
+              <div className="flex items-center gap-1.5"><Bitcoin size={12} className="text-amber-500" /> BTC · ETH · USDT · PM</div>
+              <div className="flex items-center gap-1.5"><MessageCircle size={12} className="text-green-500" /> In-app & WhatsApp support</div>
+            </div>
           </div>
+
+          <div className="hidden lg:block">
+            <Hero3DScene />
+          </div>
+        </div>
+
+        <div className="lg:hidden px-4 pb-8">
+          <Hero3DScene />
         </div>
       </div>
 
+      {/* Trust stats */}
+      <TrustStatsBand />
+
+      {/* Live ticker */}
+      <div className="mt-8">
+        <PriceTicker />
+      </div>
+
       {/* Email Verification Alert */}
-      <div className="mx-auto max-w-6xl px-4 -mt-6 relative z-10 mb-4">
+      <div className="mx-auto max-w-6xl px-4 mt-6 relative z-10 mb-4">
         <EmailVerificationBanner />
       </div>
 
