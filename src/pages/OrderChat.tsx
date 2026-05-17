@@ -11,7 +11,7 @@ interface ChatMessage {
   id: string;
   trade_id: string;
   sender_id: string;
-  sender_role: "user" | "admin";
+  sender_role: "user" | "admin" | "bot";
   body: string | null;
   attachment_url: string | null;
   attachment_name: string | null;
@@ -79,11 +79,15 @@ const OrderChat = () => {
       const unreadFilter = admin
         ? { read_by_admin: true } as const
         : { read_by_user: true } as const;
-      const otherRole = admin ? "user" : "admin";
       await supabase.from("chat_messages")
         .update(unreadFilter)
         .eq("trade_id", id)
-        .eq("sender_role", otherRole);
+        .neq("sender_id", user.id);
+
+      // If this is a fresh chat opened by the customer, trigger SwiftBot greeting
+      if (!admin && (msgs || []).length === 0) {
+        supabase.functions.invoke("chat-bot", { body: { trade_id: id, kind: "greet" } });
+      }
     })();
     return () => { cancelled = true; };
   }, [user, id, navigate, toast]);
@@ -143,6 +147,10 @@ const OrderChat = () => {
       toast({ title: "Could not send", description: error.message, variant: "destructive" });
     } else {
       setText("");
+      // Customer turn → ask SwiftBot to respond
+      if (!isAdmin) {
+        supabase.functions.invoke("chat-bot", { body: { trade_id: id } }).catch(() => {});
+      }
     }
   };
 
@@ -249,15 +257,21 @@ const OrderChat = () => {
             Order opened {new Date(order.created_at).toLocaleString()}. Chat with our team to complete this trade safely.
           </div>
           {messages.map((m) => {
-            const mine = m.sender_id === user!.id;
+            const mine = m.sender_role !== "bot" && m.sender_id === user!.id && (isAdmin ? m.sender_role === "admin" : m.sender_role === "user");
+            const isBot = m.sender_role === "bot";
+            const label = m.sender_role === "admin" ? "SwiftChain Team" : m.sender_role === "bot" ? "🤖 SwiftBot" : "Customer";
             return (
               <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[78%] rounded-2xl px-3.5 py-2 text-sm shadow-sm ${
-                  mine ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-card text-card-foreground border border-border rounded-bl-sm"
+                  mine
+                    ? "bg-primary text-primary-foreground rounded-br-sm"
+                    : isBot
+                      ? "bg-gradient-to-br from-accent/15 to-primary/10 text-foreground border border-primary/30 rounded-bl-sm"
+                      : "bg-card text-card-foreground border border-border rounded-bl-sm"
                 }`}>
                   {!mine && (
-                    <p className="text-[10px] font-semibold uppercase tracking-wide opacity-70 mb-0.5">
-                      {m.sender_role === "admin" ? "SwiftChain Team" : "Customer"}
+                    <p className={`text-[10px] font-semibold uppercase tracking-wide mb-0.5 ${isBot ? "text-primary" : "opacity-70"}`}>
+                      {label}
                     </p>
                   )}
                   {m.body && <p className="whitespace-pre-wrap break-words">{m.body}</p>}

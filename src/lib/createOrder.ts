@@ -18,12 +18,16 @@ export async function createOrder(input: NewOrderInput): Promise<string> {
 
   const amountNum = typeof input.amount === "string" ? parseFloat(input.amount) : input.amount;
 
+  // DB constraint requires lowercase 'buy' | 'sell'
+  const normalizedAction = String(input.action).trim().toLowerCase();
+  const action = normalizedAction === "buy" || normalizedAction === "sell" ? normalizedAction : "buy";
+
   const { data, error } = await supabase
     .from("trades")
     .insert({
       user_id: user.id,
       trade_type: input.trade_type,
-      action: input.action,
+      action,
       item: input.item,
       amount: isNaN(amountNum as number) ? null : amountNum,
       status: "pending",
