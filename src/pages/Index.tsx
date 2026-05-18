@@ -204,7 +204,7 @@ const Index = () => {
       </div>
 
       {/* Trade Options */}
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <Reveal className="mx-auto max-w-6xl px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="font-display text-2xl font-bold text-foreground mb-2">Start Trading Now</h2>
           <p className="text-muted-foreground text-sm">Choose what you'd like to trade below</p>
@@ -212,7 +212,7 @@ const Index = () => {
         <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           <button
             onClick={() => navigate("/gift-card")}
-            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[var(--shadow-button)] border border-border"
+            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
           >
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
               <Gift size={28} />
@@ -222,7 +222,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => navigate("/crypto")}
-            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[var(--shadow-button)] border border-border"
+            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
           >
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
               <Bitcoin size={28} />
@@ -231,7 +231,7 @@ const Index = () => {
             <p className="text-sm text-muted-foreground">Buy or sell Bitcoin, Ethereum, USDT and other cryptocurrencies</p>
           </button>
         </div>
-      </div>
+      </Reveal>
 
       {/* About / Why We Are Special */}
       <div className="bg-card border-y border-border">
