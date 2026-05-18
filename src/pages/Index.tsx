@@ -11,6 +11,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Hero3DScene from "@/components/Hero3DScene";
 import TrustStatsBand from "@/components/TrustStatsBand";
 import PriceTicker from "@/components/PriceTicker";
+import Reveal from "@/components/Reveal";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -101,6 +102,24 @@ const Index = () => {
       <div className="relative overflow-hidden grain" style={{ background: "var(--gradient-hero)" }}>
         <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl opacity-50" style={{ background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)" }} />
         <div className="pointer-events-none absolute -bottom-40 -right-20 h-[28rem] w-[28rem] rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle, hsl(var(--accent)) 0%, transparent 70%)" }} />
+        {/* Particle dots */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <span
+              key={i}
+              className="particle"
+              style={{
+                top: `${(i * 53) % 100}%`,
+                left: `${(i * 37) % 100}%`,
+                width: `${4 + (i % 5) * 2}px`,
+                height: `${4 + (i % 5) * 2}px`,
+                animationDelay: `${(i % 7) * 1.3}s`,
+                animationDuration: `${10 + (i % 6) * 2}s`,
+                opacity: 0.35,
+              }}
+            />
+          ))}
+        </div>
 
         <div className="relative mx-auto max-w-6xl px-4 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
           <div>
@@ -110,7 +129,7 @@ const Index = () => {
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 leading-[1.05]">
               <span className="text-foreground">Trade Crypto &</span>
               <br />
-              <span className="text-gradient">Gift Cards in Cedis.</span>
+              <span className="text-gradient-anim">Gift Cards in Cedis.</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mb-8 leading-relaxed max-w-xl">
               Instant Mobile Money payouts. Personally verified trades. Real human support around the clock — Bitcoin, USDT, Ethereum, Perfect Money, Amazon, iTunes, Steam and 50+ more.
@@ -120,7 +139,7 @@ const Index = () => {
                 <>
                   <button
                     onClick={() => navigate("/gift-card")}
-                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all btn-shimmer"
                   >
                     Trade Gift Cards <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -135,7 +154,7 @@ const Index = () => {
                 <>
                   <button
                     onClick={() => navigate("/auth")}
-                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all btn-shimmer"
                   >
                     Register / Join Us <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -185,7 +204,7 @@ const Index = () => {
       </div>
 
       {/* Trade Options */}
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <Reveal className="mx-auto max-w-6xl px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="font-display text-2xl font-bold text-foreground mb-2">Start Trading Now</h2>
           <p className="text-muted-foreground text-sm">Choose what you'd like to trade below</p>
@@ -193,7 +212,7 @@ const Index = () => {
         <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           <button
             onClick={() => navigate("/gift-card")}
-            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[var(--shadow-button)] border border-border"
+            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
           >
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
               <Gift size={28} />
@@ -203,7 +222,7 @@ const Index = () => {
           </button>
           <button
             onClick={() => navigate("/crypto")}
-            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[var(--shadow-button)] border border-border"
+            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
           >
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
               <Bitcoin size={28} />
@@ -212,7 +231,7 @@ const Index = () => {
             <p className="text-sm text-muted-foreground">Buy or sell Bitcoin, Ethereum, USDT and other cryptocurrencies</p>
           </button>
         </div>
-      </div>
+      </Reveal>
 
       {/* About / Why We Are Special */}
       <div className="bg-card border-y border-border">

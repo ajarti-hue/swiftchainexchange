@@ -197,6 +197,7 @@ export type Database = {
         Row: {
           action: string
           admin_notified: boolean
+          ai_paused: boolean
           amount: number | null
           completed_at: string | null
           created_at: string
@@ -211,6 +212,7 @@ export type Database = {
         Insert: {
           action: string
           admin_notified?: boolean
+          ai_paused?: boolean
           amount?: number | null
           completed_at?: string | null
           created_at?: string
@@ -225,6 +227,7 @@ export type Database = {
         Update: {
           action?: string
           admin_notified?: boolean
+          ai_paused?: boolean
           amount?: number | null
           completed_at?: string | null
           created_at?: string
