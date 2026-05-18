@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Send, Paperclip, CheckCheck, Check, CheckCircle2, MessageCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Paperclip, CheckCheck, Check, CheckCircle2, MessageCircle, Loader2, Bot, BotOff, Star } from "lucide-react";
 import PaymentMethodsPanel from "@/components/PaymentMethodsPanel";
 import logo from "@/assets/logo.jpeg";
 
@@ -31,6 +31,7 @@ interface TradeOrder {
   customer_email: string | null;
   completed_at: string | null;
   created_at: string;
+  ai_paused: boolean;
 }
 
 const OrderChat = () => {
@@ -45,6 +46,13 @@ const OrderChat = () => {
   const [uploading, setUploading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  // Review form
+  const [showReview, setShowReview] = useState(false);
+  const [reviewDismissed, setReviewDismissed] = useState(false);
+  const [rating, setRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -75,16 +83,13 @@ const OrderChat = () => {
       setMessages((msgs || []) as ChatMessage[]);
       setLoading(false);
 
-      // Mark messages from the other side as read
-      const unreadFilter = admin
-        ? { read_by_admin: true } as const
-        : { read_by_user: true } as const;
-      await supabase.from("chat_messages")
-        .update(unreadFilter)
-        .eq("trade_id", id)
-        .neq("sender_id", user.id);
+      const unreadFilter = admin ? { read_by_admin: true } as const : { read_by_user: true } as const;
+      await supabase.from("chat_messages").update(unreadFilter).eq("trade_id", id).neq("sender_id", user.id);
 
-      // If this is a fresh chat opened by the customer, trigger SwiftBot greeting
+      // Already reviewed?
+      const { data: existingReview } = await supabase.from("reviews").select("id").eq("user_id", user.id).limit(1);
+      if (existingReview && existingReview.length > 0) setAlreadyReviewed(true);
+
       if (!admin && (msgs || []).length === 0) {
         supabase.functions.invoke("chat-bot", { body: { trade_id: id, kind: "greet" } });
       }
@@ -92,7 +97,6 @@ const OrderChat = () => {
     return () => { cancelled = true; };
   }, [user, id, navigate, toast]);
 
-  // Realtime subscription
   useEffect(() => {
     if (!id || !user) return;
     const channel = supabase
@@ -101,7 +105,6 @@ const OrderChat = () => {
         async (payload) => {
           const m = payload.new as ChatMessage;
           setMessages((prev) => prev.some(p => p.id === m.id) ? prev : [...prev, m]);
-          // Notification + auto mark-as-read for our side
           if (m.sender_id !== user.id) {
             try { new Notification("New message on your SwiftChain X order", { body: m.body || "Attachment received" }); } catch {}
             const patch = isAdmin ? { read_by_admin: true } : { read_by_user: true };
@@ -123,12 +126,18 @@ const OrderChat = () => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
-  // Request notification permission once
   useEffect(() => {
     if (typeof Notification !== "undefined" && Notification.permission === "default") {
       Notification.requestPermission().catch(() => {});
     }
   }, []);
+
+  // When order becomes completed, show review prompt for customer
+  useEffect(() => {
+    if (order?.status === "completed" && !isAdmin && !alreadyReviewed && !reviewDismissed) {
+      setShowReview(true);
+    }
+  }, [order?.status, isAdmin, alreadyReviewed, reviewDismissed]);
 
   const sendMessage = async (body: string, attachment?: { url: string; name: string }) => {
     if (!user || !id || !order) return;
@@ -147,8 +156,8 @@ const OrderChat = () => {
       toast({ title: "Could not send", description: error.message, variant: "destructive" });
     } else {
       setText("");
-      // Customer turn → ask SwiftBot to respond
-      if (!isAdmin) {
+      // Only ask the AI to respond if it's the customer and AI is NOT paused
+      if (!isAdmin && !order.ai_paused) {
         supabase.functions.invoke("chat-bot", { body: { trade_id: id } }).catch(() => {});
       }
     }
@@ -171,13 +180,47 @@ const OrderChat = () => {
     if (fileRef.current) fileRef.current.value = "";
   };
 
-  const markComplete = async () => {
+  const confirmOrder = async () => {
     if (!order) return;
     const { error } = await supabase.from("trades")
       .update({ status: "completed", completed_at: new Date().toISOString() })
       .eq("id", order.id);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else toast({ title: "Order completed" });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Order confirmed ✅" });
+    // Send the thank-you message in chat
+    await supabase.from("chat_messages").insert({
+      trade_id: order.id,
+      sender_id: user!.id,
+      sender_role: "admin",
+      body: `✅ *Order Confirmed!*\n\nThank you so much for trading with SwiftChain Exchange 🙏. We truly appreciate your trust — feel free to come back anytime for your next trade.\n\nWe'd love to hear about your experience. Would you like to leave a quick review? 😊`,
+    });
+  };
+
+  const toggleAiPaused = async () => {
+    if (!order) return;
+    const next = !order.ai_paused;
+    const { error } = await supabase.from("trades").update({ ai_paused: next }).eq("id", order.id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({ title: next ? "AI paused — you've taken over" : "AI re-enabled" });
+  };
+
+  const submitReview = async () => {
+    if (!user || !order) return;
+    if (!reviewText.trim()) { toast({ title: "Add a short comment first" }); return; }
+    setSubmittingReview(true);
+    const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle();
+    const { error } = await supabase.from("reviews").insert({
+      user_id: user.id,
+      name: profile?.display_name || user.email?.split("@")[0] || "Customer",
+      rating,
+      comment: reviewText.trim(),
+      trade_type: order.trade_type,
+    });
+    setSubmittingReview(false);
+    if (error) { toast({ title: "Could not submit", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Thanks for your review! ⭐" });
+    setShowReview(false);
+    setAlreadyReviewed(true);
   };
 
   if (loading || !order) {
@@ -189,36 +232,7 @@ const OrderChat = () => {
   }
 
   const isCompleted = order.status === "completed";
-
-  if (isCompleted) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 text-center">
-        <div className="max-w-md">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/15">
-            <CheckCircle2 size={56} className="text-green-500" />
-          </div>
-          <h1 className="font-display text-3xl font-bold text-foreground mb-2">Order Completed</h1>
-          <p className="text-muted-foreground mb-1">
-            {order.action} {order.item} {order.amount ? `· $${order.amount}` : ""}
-          </p>
-          <p className="text-xs text-muted-foreground mb-6">
-            Closed {order.completed_at ? new Date(order.completed_at).toLocaleString() : ""}
-          </p>
-          <p className="text-sm text-foreground mb-8">
-            Thank you for trading with SwiftChain X. We hope to see you again soon!
-          </p>
-          <div className="flex gap-3 justify-center">
-            <button onClick={() => navigate("/")} className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-button)]">
-              Back to Home
-            </button>
-            <button onClick={() => navigate("/account")} className="rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-card-foreground">
-              My Account
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const isAwaiting = order.status === "awaiting_confirmation";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -238,12 +252,27 @@ const OrderChat = () => {
             </div>
           </button>
           {isAdmin ? (
-            <button onClick={markComplete} className="rounded-md bg-green-600 hover:bg-green-700 px-3 py-1.5 text-[11px] font-semibold text-white">
-              Mark Complete
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={toggleAiPaused}
+                title={order.ai_paused ? "Hand back to AI" : "Take over chat"}
+                className={`flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-semibold ${order.ai_paused ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" : "bg-primary/10 text-primary"}`}
+              >
+                {order.ai_paused ? <><Bot size={12} /> Hand back</> : <><BotOff size={12} /> Take over</>}
+              </button>
+              {!isCompleted && (
+                <button onClick={confirmOrder} className="rounded-md bg-green-600 hover:bg-green-700 px-3 py-1.5 text-[11px] font-semibold text-white">
+                  Confirm Order ✅
+                </button>
+              )}
+            </div>
           ) : (
-            <span className="rounded-full bg-yellow-500/15 px-2.5 py-1 text-[10px] font-medium text-yellow-700 dark:text-yellow-400">
-              {order.status}
+            <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium ${
+              isCompleted ? "bg-green-500/15 text-green-700 dark:text-green-400" :
+              isAwaiting ? "bg-blue-500/15 text-blue-700 dark:text-blue-400" :
+              "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400"
+            }`}>
+              {isCompleted ? "✅ Order Confirmed" : isAwaiting ? "⏳ Awaiting Admin Confirmation" : order.status}
             </span>
           )}
         </div>
@@ -254,14 +283,31 @@ const OrderChat = () => {
         <div className="mx-auto max-w-3xl px-4 py-4 space-y-3">
           <div className="rounded-lg border border-border bg-muted/40 p-3 text-center text-xs text-muted-foreground">
             <MessageCircle size={14} className="inline mr-1" />
-            Order opened {new Date(order.created_at).toLocaleString()}. Chat with our team to complete this trade safely.
+            Order opened {new Date(order.created_at).toLocaleString()}.
           </div>
+
+          {isAwaiting && !isAdmin && (
+            <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-3 text-center text-xs text-blue-700 dark:text-blue-300">
+              ⏳ Your order is awaiting admin confirmation. An agent will review and confirm shortly.
+            </div>
+          )}
+          {isCompleted && (
+            <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-center text-xs text-green-700 dark:text-green-300">
+              ✅ Order Confirmed {order.completed_at ? `on ${new Date(order.completed_at).toLocaleString()}` : ""}
+            </div>
+          )}
+          {isAdmin && order.ai_paused && (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-center text-xs text-amber-700 dark:text-amber-300">
+              🧑‍💼 You've taken over this chat. SwiftBot will not auto-reply until you hand it back.
+            </div>
+          )}
+
           {messages.map((m) => {
             const mine = m.sender_role !== "bot" && m.sender_id === user!.id && (isAdmin ? m.sender_role === "admin" : m.sender_role === "user");
             const isBot = m.sender_role === "bot";
             const label = m.sender_role === "admin" ? "SwiftChain Team" : m.sender_role === "bot" ? "🤖 SwiftBot" : "Customer";
             return (
-              <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+              <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"} animate-fade-in`}>
                 <div className={`max-w-[78%] rounded-2xl px-3.5 py-2 text-sm shadow-sm ${
                   mine
                     ? "bg-primary text-primary-foreground rounded-br-sm"
@@ -298,50 +344,89 @@ const OrderChat = () => {
               </div>
             );
           })}
+
+          {/* Review prompt */}
+          {showReview && !isAdmin && (
+            <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/5 to-accent/10 p-4 animate-fade-in">
+              <p className="text-sm font-semibold text-foreground mb-3">⭐ Leave a quick review</p>
+              <div className="flex gap-1 mb-3">
+                {[1,2,3,4,5].map(n => (
+                  <button key={n} onClick={() => setRating(n)} className="transition-transform hover:scale-110">
+                    <Star size={28} className={n <= rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"} />
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                placeholder="How was your experience?"
+                rows={2}
+                className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20"
+              />
+              <div className="mt-3 flex gap-2">
+                <button onClick={submitReview} disabled={submittingReview} className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground btn-shimmer disabled:opacity-50">
+                  {submittingReview ? "Submitting..." : "Leave a Review ✍️"}
+                </button>
+                <button onClick={() => { setShowReview(false); setReviewDismissed(true); }} className="rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground">
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          )}
+          {isCompleted && !isAdmin && !showReview && !alreadyReviewed && (
+            <div className="text-center">
+              <button onClick={() => setShowReview(true)} className="text-xs text-primary underline hover:text-primary/80">
+                Leave a review later? Tap here ✍️
+              </button>
+            </div>
+          )}
+
           <div ref={endRef} />
         </div>
       </main>
 
       {/* Composer */}
-      <footer className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur-md">
-        <div className="mx-auto max-w-3xl px-3 pt-2 flex justify-center">
-          <PaymentMethodsPanel tradeId={order.id} senderId={user!.id} isAdmin={isAdmin} />
-        </div>
-        <div className="mx-auto max-w-3xl px-3 py-3 flex items-end gap-2">
-          <input ref={fileRef} type="file" hidden onChange={onFile} accept="image/*,.pdf,.doc,.docx" />
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            disabled={uploading}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-foreground disabled:opacity-50"
-            aria-label="Attach file"
-          >
-            {uploading ? <Loader2 size={16} className="animate-spin" /> : <Paperclip size={18} />}
-          </button>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(text);
-              }
-            }}
-            placeholder="Type a message..."
-            rows={1}
-            className="flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20 max-h-32"
-          />
-          <button
-            type="button"
-            onClick={() => sendMessage(text)}
-            disabled={sending || (!text.trim())}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-button)] disabled:opacity-40"
-            aria-label="Send"
-          >
-            {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-          </button>
-        </div>
-      </footer>
+      {!isCompleted && (
+        <footer className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur-md">
+          <div className="mx-auto max-w-3xl px-3 pt-2 flex justify-center">
+            <PaymentMethodsPanel tradeId={order.id} senderId={user!.id} isAdmin={isAdmin} />
+          </div>
+          <div className="mx-auto max-w-3xl px-3 py-3 flex items-end gap-2">
+            <input ref={fileRef} type="file" hidden onChange={onFile} accept="image/*,.pdf,.doc,.docx" />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-foreground disabled:opacity-50"
+              aria-label="Attach file"
+            >
+              {uploading ? <Loader2 size={16} className="animate-spin" /> : <Paperclip size={18} />}
+            </button>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(text);
+                }
+              }}
+              placeholder="Type a message..."
+              rows={1}
+              className="flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20 max-h-32"
+            />
+            <button
+              type="button"
+              onClick={() => sendMessage(text)}
+              disabled={sending || (!text.trim())}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-button)] disabled:opacity-40"
+              aria-label="Send"
+            >
+              {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            </button>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };
