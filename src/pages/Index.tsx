@@ -11,6 +11,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Hero3DScene from "@/components/Hero3DScene";
 import TrustStatsBand from "@/components/TrustStatsBand";
 import PriceTicker from "@/components/PriceTicker";
+import Reveal from "@/components/Reveal";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
