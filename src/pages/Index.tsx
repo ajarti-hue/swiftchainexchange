@@ -139,7 +139,7 @@ const Index = () => {
                 <>
                   <button
                     onClick={() => navigate("/gift-card")}
-                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all btn-shimmer"
                   >
                     Trade Gift Cards <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -154,7 +154,7 @@ const Index = () => {
                 <>
                   <button
                     onClick={() => navigate("/auth")}
-                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all"
+                    className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-button)] hover:translate-y-[-2px] transition-all btn-shimmer"
                   >
                     Register / Join Us <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
