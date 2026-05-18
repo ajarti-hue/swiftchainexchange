@@ -102,6 +102,24 @@ const Index = () => {
       <div className="relative overflow-hidden grain" style={{ background: "var(--gradient-hero)" }}>
         <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl opacity-50" style={{ background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)" }} />
         <div className="pointer-events-none absolute -bottom-40 -right-20 h-[28rem] w-[28rem] rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle, hsl(var(--accent)) 0%, transparent 70%)" }} />
+        {/* Particle dots */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <span
+              key={i}
+              className="particle"
+              style={{
+                top: `${(i * 53) % 100}%`,
+                left: `${(i * 37) % 100}%`,
+                width: `${4 + (i % 5) * 2}px`,
+                height: `${4 + (i % 5) * 2}px`,
+                animationDelay: `${(i % 7) * 1.3}s`,
+                animationDuration: `${10 + (i % 6) * 2}s`,
+                opacity: 0.35,
+              }}
+            />
+          ))}
+        </div>
 
         <div className="relative mx-auto max-w-6xl px-4 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
           <div>
