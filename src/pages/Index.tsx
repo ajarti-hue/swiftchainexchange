@@ -129,7 +129,7 @@ const Index = () => {
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 leading-[1.05]">
               <span className="text-foreground">Trade Crypto &</span>
               <br />
-              <span className="text-gradient">Gift Cards in Cedis.</span>
+              <span className="text-gradient-anim">Gift Cards in Cedis.</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mb-8 leading-relaxed max-w-xl">
               Instant Mobile Money payouts. Personally verified trades. Real human support around the clock — Bitcoin, USDT, Ethereum, Perfect Money, Amazon, iTunes, Steam and 50+ more.
