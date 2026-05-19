@@ -28,6 +28,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <EmailVerificationBanner />
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/gift-card" element={<GiftCardTrade />} />
