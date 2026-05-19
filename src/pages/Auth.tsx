@@ -57,8 +57,20 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        setShowOTP(true);
-        toast({ title: "Verification code sent! 📧", description: "Check your email for a 6-digit code to verify your account." });
+
+        // Trigger 6-digit OTP email in the background (don't block UX)
+        supabase.auth
+          .signInWithOtp({
+            email,
+            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+          })
+          .catch(() => {});
+
+        toast({
+          title: "Welcome to SwiftChain Exchange! 🎉",
+          description: "We sent a 6-digit code to your email. Verify anytime from the banner.",
+        });
+        navigate("/");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
