@@ -16,6 +16,16 @@ export async function createOrder(input: NewOrderInput): Promise<string> {
   if (userErr || !userData.user) throw new Error("You must be signed in to start an order.");
   const user = userData.user;
 
+  // Require verified email before trading (security)
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("email_verified")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!prof?.email_verified) {
+    throw new Error("🔒 Please verify your email before making a trade. Click 'Verify Now' in the banner at the top of the page.");
+  }
+
   const amountNum = typeof input.amount === "string" ? parseFloat(input.amount) : input.amount;
 
   // DB constraint requires lowercase 'buy' | 'sell'

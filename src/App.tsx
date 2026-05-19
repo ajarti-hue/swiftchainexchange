@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import Index from "./pages/Index";
 import GiftCardTrade from "./pages/GiftCardTrade";
 import CryptoTrade from "./pages/CryptoTrade";
@@ -27,6 +28,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <EmailVerificationBanner />
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/gift-card" element={<GiftCardTrade />} />
