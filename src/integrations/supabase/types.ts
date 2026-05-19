@@ -134,6 +134,7 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string
+          email_verified: boolean
           id: string
           phone: string | null
           rewards_balance: number
@@ -144,6 +145,7 @@ export type Database = {
         Insert: {
           created_at?: string
           display_name: string
+          email_verified?: boolean
           id?: string
           phone?: string | null
           rewards_balance?: number
@@ -154,6 +156,7 @@ export type Database = {
         Update: {
           created_at?: string
           display_name?: string
+          email_verified?: boolean
           id?: string
           phone?: string | null
           rewards_balance?: number
