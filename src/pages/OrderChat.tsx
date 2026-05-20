@@ -225,7 +225,7 @@ const OrderChat = () => {
 
   if (loading || !order) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen relative flex items-center justify-center">
         <Loader2 className="animate-spin text-primary" />
       </div>
     );
@@ -235,7 +235,7 @@ const OrderChat = () => {
   const isAwaiting = order.status === "awaiting_confirmation";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen relative flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between gap-3">

@@ -124,7 +124,7 @@ const Auth = () => {
   // OTP Verification Screen
   if (showOTP) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen relative">
         <div className="mx-auto max-w-lg px-4 py-8">
           <button onClick={() => setShowOTP(false)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft size={16} /> Back
@@ -181,7 +181,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen relative">
       <div className="mx-auto max-w-lg px-4 py-8">
         <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft size={16} /> Back to Home

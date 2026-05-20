@@ -158,7 +158,7 @@ const Admin = () => {
 
   if (authLoading || isAdmin === null) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen relative flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
@@ -166,7 +166,7 @@ const Admin = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4">
+      <div className="min-h-screen relative flex flex-col items-center justify-center gap-4 px-4">
         <Shield size={48} className="text-destructive" />
         <h1 className="font-display text-xl font-bold text-foreground">Access Denied</h1>
         <p className="text-sm text-muted-foreground text-center">You don't have admin privileges.</p>
@@ -203,7 +203,7 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen relative">
       {/* Admin Nav */}
       <nav className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">

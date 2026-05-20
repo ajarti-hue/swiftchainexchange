@@ -68,7 +68,7 @@ const Account = () => {
 
   if (loading || !profile) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen relative flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
@@ -77,7 +77,7 @@ const Account = () => {
   const nextRewardAt = 3 - (profile.total_trades % 3);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen relative">
       <div className="mx-auto max-w-lg px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
