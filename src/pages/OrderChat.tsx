@@ -174,8 +174,8 @@ const OrderChat = () => {
       toast({ title: "Upload failed", description: upErr.message, variant: "destructive" });
       return;
     }
-    const { data } = supabase.storage.from("chat-attachments").getPublicUrl(path);
-    await sendMessage("", { url: data.publicUrl, name: file.name });
+    const { data: signed } = await supabase.storage.from("chat-attachments").createSignedUrl(path, 60 * 60 * 24 * 7);
+    await sendMessage("", { url: signed?.signedUrl ?? "", name: file.name, path });
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
   };
