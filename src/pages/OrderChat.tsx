@@ -139,7 +139,7 @@ const OrderChat = () => {
     }
   }, [order?.status, isAdmin, alreadyReviewed, reviewDismissed]);
 
-  const sendMessage = async (body: string, attachment?: { url: string; name: string }) => {
+  const sendMessage = async (body: string, attachment?: { url: string; name: string; path?: string }) => {
     if (!user || !id || !order) return;
     if (!body.trim() && !attachment) return;
     setSending(true);
