@@ -1,54 +1,121 @@
+import { useEffect, useRef } from "react";
 import { Bitcoin } from "lucide-react";
 
-const Coin = ({ className, label, color, style }: { className: string; label: string; color: string; style?: React.CSSProperties }) => (
-  <div className={`absolute float-coin ${className}`} style={style}>
+/**
+ * Premium 3D hero scene — rotating crypto coins on a perspective grid plate
+ * with mouse parallax, glowing orbital rings and a live status badge.
+ */
+const COINS = [
+  { label: "BTC", color: "hsl(35 95% 55%)",  size: "h-28 w-28 lg:h-40 lg:w-40", pos: "left-[6%]  top-[8%]",   depth: 1.2, delay: "0s"   },
+  { label: "ETH", color: "hsl(235 75% 58%)", size: "h-24 w-24 lg:h-32 lg:w-32", pos: "right-[4%] top-[14%]",  depth: 0.9, delay: "1.2s" },
+  { label: "USDT",color: "hsl(160 70% 40%)", size: "h-20 w-20 lg:h-28 lg:w-28", pos: "left-[34%] top-[42%]",  depth: 0.7, delay: "0.6s" },
+  { label: "PM",  color: "hsl(0 75% 55%)",   size: "h-16 w-16 lg:h-24 lg:w-24", pos: "right-[26%] bottom-[14%]", depth: 1.0, delay: "2.1s" },
+  { label: "SOL", color: "hsl(280 80% 60%)", size: "h-14 w-14 lg:h-20 lg:w-20", pos: "left-[18%] bottom-[18%]",  depth: 0.6, delay: "1.8s" },
+];
+
+const Coin = ({ label, color, size, pos, depth, delay, mouse }: {
+  label: string; color: string; size: string; pos: string; depth: number; delay: string;
+  mouse: { x: number; y: number };
+}) => {
+  const tx = mouse.x * 18 * depth;
+  const ty = mouse.y * 18 * depth;
+  const rx = -mouse.y * 14 * depth;
+  const ry = mouse.x * 14 * depth;
+  return (
     <div
-      className="relative grid place-items-center rounded-full shadow-2xl"
+      className={`absolute ${pos} ${size} float-coin will-change-transform`}
       style={{
-        width: "100%",
-        height: "100%",
-        background: `radial-gradient(circle at 30% 25%, hsl(0 0% 100% / 0.85), ${color} 55%, hsl(215 60% 18%) 100%)`,
-        boxShadow: `0 30px 60px -20px ${color}, inset 0 -8px 20px hsl(0 0% 0% / 0.35), inset 0 8px 16px hsl(0 0% 100% / 0.25)`,
-        transform: "rotate(-8deg)",
+        transform: `translate3d(${tx}px, ${ty}px, 0)`,
+        transition: "transform 220ms cubic-bezier(.2,.7,.2,1)",
+        animationDelay: delay,
       }}
     >
-      <span className="font-display font-black text-white/95 drop-shadow-lg" style={{ fontSize: "44%" }}>{label}</span>
-      <div className="absolute inset-2 rounded-full border border-white/15" />
+      <div
+        className="relative h-full w-full grid place-items-center rounded-full shadow-2xl coin-spin"
+        style={{
+          transformStyle: "preserve-3d",
+          background: `radial-gradient(circle at 30% 25%, hsl(0 0% 100% / 0.92), ${color} 55%, hsl(215 60% 14%) 100%)`,
+          boxShadow: `0 30px 60px -20px ${color}, inset 0 -8px 20px hsl(0 0% 0% / 0.4), inset 0 8px 16px hsl(0 0% 100% / 0.3)`,
+          transform: `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`,
+        }}
+      >
+        {/* face */}
+        <span className="font-display font-black text-white/95 drop-shadow-lg select-none" style={{ fontSize: "40%" }}>{label}</span>
+        {/* inner ring */}
+        <div className="absolute inset-2 rounded-full border border-white/20" />
+        <div className="absolute inset-4 rounded-full border border-white/10" />
+        {/* highlight sheen */}
+        <div
+          className="absolute inset-0 rounded-full opacity-70 mix-blend-overlay"
+          style={{ background: "linear-gradient(135deg, hsl(0 0% 100% / 0.45), transparent 50%)" }}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Hero3DScene = () => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [mouse, setMouse] = (require("react") as typeof import("react")).useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 2 - 1; // -1..1
+      const y = ((e.clientY - r.top) / r.height) * 2 - 1;
+      setMouse({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
+    };
+    const onLeave = () => setMouse({ x: 0, y: 0 });
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, [setMouse]);
+
   return (
-    <div className="relative h-[320px] lg:h-[440px] w-full">
+    <div ref={wrapRef} className="relative h-[340px] lg:h-[480px] w-full select-none">
       {/* glowing orb backdrop */}
       <div
-        className="absolute -inset-10 rounded-full blur-3xl opacity-60"
+        className="absolute -inset-10 rounded-full blur-3xl opacity-70 pulse-soft"
         style={{ background: "radial-gradient(circle at 50% 50%, hsl(205 80% 60% / 0.55), transparent 60%)" }}
       />
 
-      {/* Grid plate */}
+      {/* orbital rings */}
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+        <div className="ring-orbit h-[78%] w-[78%] rounded-full border border-primary/20" />
+        <div className="ring-orbit-rev absolute h-[58%] w-[58%] rounded-full border border-accent/25" />
+        <div className="absolute h-[34%] w-[34%] rounded-full border border-primary/15" />
+      </div>
+
+      {/* perspective grid plate */}
       <div
-        className="absolute inset-x-6 bottom-0 h-40 rounded-[2rem] glass overflow-hidden"
-        style={{ transform: "perspective(900px) rotateX(40deg)", transformOrigin: "center bottom" }}
+        className="absolute inset-x-6 bottom-0 h-44 rounded-[2rem] glass overflow-hidden"
+        style={{ transform: "perspective(900px) rotateX(42deg)", transformOrigin: "center bottom" }}
       >
         <div
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-40 grid-sweep"
           style={{
             backgroundImage:
-              "linear-gradient(hsl(205 80% 60% / 0.4) 1px, transparent 1px), linear-gradient(90deg, hsl(205 80% 60% / 0.4) 1px, transparent 1px)",
+              "linear-gradient(hsl(205 80% 60% / 0.45) 1px, transparent 1px), linear-gradient(90deg, hsl(205 80% 60% / 0.45) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}
         />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, transparent 60%)" }}
+        />
       </div>
 
-      <Coin className="left-[8%] top-[10%] h-28 w-28 lg:h-36 lg:w-36" label="BTC" color="hsl(35 95% 55%)" style={{ ["--rot" as any]: "-6deg", animationDelay: "0s" }} />
-      <Coin className="right-[6%] top-[18%] h-24 w-24 lg:h-32 lg:w-32" label="ETH" color="hsl(235 75% 58%)" style={{ ["--rot" as any]: "8deg", animationDelay: "1.2s" }} />
-      <Coin className="left-[34%] top-[42%] h-20 w-20 lg:h-28 lg:w-28" label="USDT" color="hsl(160 70% 40%)" style={{ ["--rot" as any]: "-3deg", animationDelay: "0.6s" }} />
-      <Coin className="right-[28%] bottom-[14%] h-16 w-16 lg:h-24 lg:w-24" label="PM" color="hsl(0 75% 55%)" style={{ ["--rot" as any]: "4deg", animationDelay: "2.1s" }} />
+      {COINS.map((c) => (
+        <Coin key={c.label} {...c} mouse={mouse} />
+      ))}
 
       {/* Live badge */}
-      <div className="absolute top-2 right-2 lg:top-4 lg:right-4 flex items-center gap-2 rounded-full glass px-3 py-1.5 text-[10px] font-semibold text-foreground">
+      <div className="absolute top-2 right-2 lg:top-4 lg:right-4 flex items-center gap-2 rounded-full glass px-3 py-1.5 text-[10px] font-semibold text-foreground shadow-lg">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
@@ -56,7 +123,7 @@ const Hero3DScene = () => {
         LIVE · Accra, Ghana
       </div>
 
-      {/* Bitcoin icon floating */}
+      {/* Floating GHS badge */}
       <div className="absolute bottom-6 left-6 flex items-center gap-2 rounded-2xl glass px-3 py-2 text-xs font-medium text-foreground shadow-xl">
         <Bitcoin size={14} className="text-amber-500" />
         Best GHS rates · Updated minute-by-minute
