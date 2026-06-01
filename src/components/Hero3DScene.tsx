@@ -19,9 +19,10 @@ const Coin = ({ label, color, size, pos, depth, delay, mouse }: {
 }) => {
   const tx = mouse.x * 18 * depth;
   const ty = mouse.y * 18 * depth;
-  const rx = -mouse.y * 14 * depth;
-  const ry = mouse.x * 14 * depth;
+  const rx = -mouse.y * 12 * depth;
+  const ry = mouse.x * 12 * depth;
   return (
+    // Layer 1: position + mouse parallax translate + float anim
     <div
       className={`absolute ${pos} ${size} float-coin will-change-transform`}
       style={{
@@ -30,25 +31,34 @@ const Coin = ({ label, color, size, pos, depth, delay, mouse }: {
         animationDelay: delay,
       }}
     >
+      {/* Layer 2: mouse-driven tilt */}
       <div
-        className="relative h-full w-full grid place-items-center rounded-full shadow-2xl coin-spin"
+        className="h-full w-full"
         style={{
-          transformStyle: "preserve-3d",
-          background: `radial-gradient(circle at 30% 25%, hsl(0 0% 100% / 0.92), ${color} 55%, hsl(215 60% 14%) 100%)`,
-          boxShadow: `0 30px 60px -20px ${color}, inset 0 -8px 20px hsl(0 0% 0% / 0.4), inset 0 8px 16px hsl(0 0% 100% / 0.3)`,
           transform: `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`,
+          transition: "transform 220ms cubic-bezier(.2,.7,.2,1)",
+          transformStyle: "preserve-3d",
         }}
       >
-        {/* face */}
-        <span className="font-display font-black text-white/95 drop-shadow-lg select-none" style={{ fontSize: "40%" }}>{label}</span>
-        {/* inner ring */}
-        <div className="absolute inset-2 rounded-full border border-white/20" />
-        <div className="absolute inset-4 rounded-full border border-white/10" />
-        {/* highlight sheen */}
-        <div
-          className="absolute inset-0 rounded-full opacity-70 mix-blend-overlay"
-          style={{ background: "linear-gradient(135deg, hsl(0 0% 100% / 0.45), transparent 50%)" }}
-        />
+        {/* Layer 3: continuous Y-spin */}
+        <div className="h-full w-full coin-spin" style={{ transformStyle: "preserve-3d" }}>
+          {/* Layer 4: the coin face */}
+          <div
+            className="relative h-full w-full grid place-items-center rounded-full shadow-2xl"
+            style={{
+              background: `radial-gradient(circle at 30% 25%, hsl(0 0% 100% / 0.92), ${color} 55%, hsl(215 60% 14%) 100%)`,
+              boxShadow: `0 30px 60px -20px ${color}, inset 0 -8px 20px hsl(0 0% 0% / 0.4), inset 0 8px 16px hsl(0 0% 100% / 0.3)`,
+            }}
+          >
+            <span className="font-display font-black text-white/95 drop-shadow-lg select-none" style={{ fontSize: "40%" }}>{label}</span>
+            <div className="absolute inset-2 rounded-full border border-white/20" />
+            <div className="absolute inset-4 rounded-full border border-white/10" />
+            <div
+              className="absolute inset-0 rounded-full opacity-70 mix-blend-overlay"
+              style={{ background: "linear-gradient(135deg, hsl(0 0% 100% / 0.45), transparent 50%)" }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
