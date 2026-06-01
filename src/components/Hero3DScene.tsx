@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bitcoin } from "lucide-react";
 
 /**
@@ -56,7 +56,7 @@ const Coin = ({ label, color, size, pos, depth, delay, mouse }: {
 
 const Hero3DScene = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [mouse, setMouse] = (require("react") as typeof import("react")).useState({ x: 0, y: 0 });
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const el = wrapRef.current;
