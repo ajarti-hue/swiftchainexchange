@@ -20,7 +20,7 @@ const EmailVerificationBanner = () => {
   const [resending, setResending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
-  // Load verified flag from profile
+  // Load verified flag — trust Supabase's own confirmation OR our profile flag.
   useEffect(() => {
     if (!user) {
       setEmailVerified(null);
@@ -28,12 +28,18 @@ const EmailVerificationBanner = () => {
     }
     let cancelled = false;
     (async () => {
+      const supaConfirmed = Boolean((user as any).email_confirmed_at || (user as any).confirmed_at);
       const { data } = await supabase
         .from("profiles")
         .select("email_verified")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (!cancelled) setEmailVerified(Boolean(data?.email_verified));
+      const verified = supaConfirmed || Boolean(data?.email_verified);
+      if (!cancelled) setEmailVerified(verified);
+      // Auto-sync stale profile flag so future loads are instant.
+      if (supaConfirmed && !data?.email_verified) {
+        await supabase.from("profiles").update({ email_verified: true }).eq("user_id", user.id);
+      }
     })();
     return () => {
       cancelled = true;
