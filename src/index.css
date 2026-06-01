@@ -208,4 +208,36 @@
     filter: blur(1px);
     animation: drift 12s ease-in-out infinite;
   }
+
+  /* === Premium 3D hero scene === */
+  @keyframes coin-spin-y {
+    0%   { transform: perspective(800px) rotateY(0deg) rotateX(6deg); }
+    50%  { transform: perspective(800px) rotateY(180deg) rotateX(-6deg); }
+    100% { transform: perspective(800px) rotateY(360deg) rotateX(6deg); }
+  }
+  .coin-spin {
+    animation: coin-spin-y 18s linear infinite;
+    backface-visibility: visible;
+  }
+  @keyframes ring-orbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .ring-orbit     { animation: ring-orbit 40s linear infinite; }
+  .ring-orbit-rev { animation: ring-orbit 55s linear infinite reverse; }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 0.9; transform: scale(1.04); }
+  }
+  .pulse-soft { animation: pulse-soft 6s ease-in-out infinite; }
+  @keyframes grid-sweep {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 64px 0, 0 64px; }
+  }
+  .grid-sweep { animation: grid-sweep 12s linear infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coin-spin, .ring-orbit, .ring-orbit-rev, .pulse-soft, .grid-sweep, .float-coin { animation: none !important; }
+  }
 }
+
