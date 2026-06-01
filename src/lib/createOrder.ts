@@ -16,14 +16,22 @@ export async function createOrder(input: NewOrderInput): Promise<string> {
   if (userErr || !userData.user) throw new Error("You must be signed in to start an order.");
   const user = userData.user;
 
-  // Require verified email before trading (security)
+  // Verification gate — accept EITHER Supabase's own email_confirmed_at OR our profile flag.
+  // If Supabase confirms the email but the profile flag is stale, auto-sync it.
+  const supaConfirmed = Boolean((user as any).email_confirmed_at || (user as any).confirmed_at);
   const { data: prof } = await supabase
     .from("profiles")
     .select("email_verified")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (!prof?.email_verified) {
+
+  const verified = supaConfirmed || Boolean(prof?.email_verified);
+  if (!verified) {
     throw new Error("🔒 Please verify your email before making a trade. Click 'Verify Now' in the banner at the top of the page.");
+  }
+  if (supaConfirmed && !prof?.email_verified) {
+    // best-effort sync, don't block the order
+    await supabase.from("profiles").update({ email_verified: true }).eq("user_id", user.id);
   }
 
   const amountNum = typeof input.amount === "string" ? parseFloat(input.amount) : input.amount;
