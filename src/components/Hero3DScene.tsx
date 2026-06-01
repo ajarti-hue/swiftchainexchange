@@ -24,7 +24,7 @@ const Coin = ({ label, color, size, pos, depth, delay, mouse }: {
   return (
     // Layer 1: position + mouse parallax translate + float anim
     <div
-      className={`absolute ${pos} ${size} float-coin will-change-transform`}
+      className={`absolute ${pos} ${size} will-change-transform`}
       style={{
         transform: `translate3d(${tx}px, ${ty}px, 0)`,
         transition: "transform 220ms cubic-bezier(.2,.7,.2,1)",
