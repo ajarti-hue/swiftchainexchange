@@ -17,6 +17,10 @@ import Admin from "./pages/Admin";
 import OrderChat from "./pages/OrderChat";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import AmlPolicy from "./pages/AmlPolicy";
+import KycPolicy from "./pages/KycPolicy";
+import RiskDisclosure from "./pages/RiskDisclosure";
+import SecurityCenter from "./pages/SecurityCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
