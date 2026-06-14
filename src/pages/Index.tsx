@@ -234,6 +234,22 @@ const Index = () => {
         </div>
       </Reveal>
 
+      {/* How it works */}
+      <HowItWorksSection />
+
+      {/* Partners / Networks */}
+      <PartnersStrip />
+
+      {/* Mission */}
+      <MissionSection />
+
+      {/* Why Choose */}
+      <WhyChooseSection />
+
+      {/* Security & Compliance */}
+      <SecurityComplianceSection />
+
+
       {/* About / Why We Are Special */}
       <div className="bg-card border-y border-border">
         <div className="mx-auto max-w-6xl px-4">
