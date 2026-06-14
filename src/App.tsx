@@ -17,6 +17,10 @@ import Admin from "./pages/Admin";
 import OrderChat from "./pages/OrderChat";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import AmlPolicy from "./pages/AmlPolicy";
+import KycPolicy from "./pages/KycPolicy";
+import RiskDisclosure from "./pages/RiskDisclosure";
+import SecurityCenter from "./pages/SecurityCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +46,10 @@ const App = () => (
             <Route path="/chat/:id" element={<OrderChat />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/aml-policy" element={<AmlPolicy />} />
+            <Route path="/kyc-policy" element={<KycPolicy />} />
+            <Route path="/risk-disclosure" element={<RiskDisclosure />} />
+            <Route path="/security" element={<SecurityCenter />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

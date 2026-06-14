@@ -12,6 +12,7 @@ import Hero3DScene from "@/components/Hero3DScene";
 import TrustStatsBand from "@/components/TrustStatsBand";
 import PriceTicker from "@/components/PriceTicker";
 import Reveal from "@/components/Reveal";
+import { MissionSection, WhyChooseSection, SecurityComplianceSection, PartnersStrip, HowItWorksSection } from "@/components/HomeSections";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -232,6 +233,22 @@ const Index = () => {
           </button>
         </div>
       </Reveal>
+
+      {/* How it works */}
+      <HowItWorksSection />
+
+      {/* Partners / Networks */}
+      <PartnersStrip />
+
+      {/* Mission */}
+      <MissionSection />
+
+      {/* Why Choose */}
+      <WhyChooseSection />
+
+      {/* Security & Compliance */}
+      <SecurityComplianceSection />
+
 
       {/* About / Why We Are Special */}
       <div className="bg-card border-y border-border">
