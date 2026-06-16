@@ -53,7 +53,7 @@ const CryptoTrade = () => {
     <div className="min-h-screen relative">
       <div className="mx-auto max-w-lg px-4 py-8">
         <button onClick={() => navigate("/")} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> Back to Home
         </button>
 
         <div className="flex items-center gap-3 mb-8">
