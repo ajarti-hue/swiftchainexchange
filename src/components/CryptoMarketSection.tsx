@@ -39,7 +39,9 @@ const CryptoMarketSection = () => {
   const [selectedCoin, setSelectedCoin] = useState<CoinData | null>(null);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [newsLoading, setNewsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"rates" | "market">("rates");
+  const [activeTab, setActiveTab] = useState<"rates" | "market" | "movers">("rates");
+  const [movers, setMovers] = useState<CoinData[]>([]);
+  const [moversLoading, setMoversLoading] = useState(false);
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -76,6 +78,27 @@ const CryptoMarketSection = () => {
     const interval = setInterval(fetchPrices, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchMovers = async () => {
+    try {
+      setMoversLoading(true);
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=24h&sparkline=false`
+      );
+      if (res.ok) {
+        const data: CoinData[] = await res.json();
+        const sorted = [...data].sort((a, b) => (b.price_change_percentage_24h ?? 0) - (a.price_change_percentage_24h ?? 0));
+        const gainers = sorted.slice(0, 5);
+        const losers = sorted.slice(-5).reverse();
+        setMovers([...gainers, ...losers]);
+      }
+    } catch (e) { console.error("movers fetch", e); }
+    finally { setMoversLoading(false); }
+  };
+
+  useEffect(() => {
+    if (activeTab === "movers" && movers.length === 0) fetchMovers();
+  }, [activeTab]);
 
   const fetchNews = async (coin: CoinData) => {
     setSelectedCoin(coin);
@@ -134,6 +157,16 @@ const CryptoMarketSection = () => {
           }`}
         >
           <TrendingUp size={15} /> Live Market (USD)
+        </button>
+        <button
+          onClick={() => setActiveTab("movers")}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors ${
+            activeTab === "movers"
+              ? "bg-primary/10 text-primary border-b-2 border-primary"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          }`}
+        >
+          <TrendingUp size={15} /> Top Movers (24h)
         </button>
       </div>
 
