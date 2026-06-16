@@ -40,64 +40,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-          <button onClick={() => navigate("/")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src={logo} alt="SwiftChain X" className="h-10 w-10 rounded-xl object-cover" />
-            <span className="font-display text-lg font-bold text-foreground hidden sm:inline">SwiftChain X</span>
-          </button>
-          {user && tradeCount !== null && (
-            <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              <TrendingUp size={12} /> {tradeCount} trade{tradeCount !== 1 ? "s" : ""}
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <a
-              href="https://whatsapp.com/channel/0029Vb7LE6T89ingo3wmca3s"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <MessageCircle size={14} /> WhatsApp Channel
-            </a>
-            {user ? (
-              <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <button
-                    onClick={() => navigate("/admin")}
-                    className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground hover:bg-accent/80 transition-all"
-                  >
-                    <Settings size={14} /> Admin
-                  </button>
-                )}
-                <button
-                  onClick={() => navigate("/account")}
-                  className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-[var(--shadow-button)]"
-                >
-                  <User size={14} /> My Account
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => navigate("/auth")}
-                  className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-4 py-2 text-xs font-semibold text-primary hover:bg-primary/20 transition-all"
-                >
-                  <LogIn size={14} /> Login
-                </button>
-                <button
-                  onClick={() => navigate("/auth")}
-                  className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-[var(--shadow-button)]"
-                >
-                  Register / Join Us
-                </button>
-              </div>
-            )}
+      {user && tradeCount !== null && (
+        <div className="mx-auto max-w-7xl px-4 pt-3 flex justify-end">
+          <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <TrendingUp size={12} /> {tradeCount} trade{tradeCount !== 1 ? "s" : ""}
           </div>
         </div>
-      </nav>
+      )}
 
       {/* Hero Section */}
       <div className="relative overflow-hidden grain" style={{ background: "var(--gradient-hero)" }}>
