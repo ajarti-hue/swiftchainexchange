@@ -270,6 +270,64 @@ const CryptoMarketSection = () => {
             )}
           </>
         )}
+
+        {/* Top Movers Tab */}
+        {activeTab === "movers" && (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs text-muted-foreground">Top 5 gainers & top 5 losers — last 24h</p>
+              <button onClick={fetchMovers} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <RefreshCw size={12} className={moversLoading ? "animate-spin" : ""} /> Refresh
+              </button>
+            </div>
+            {moversLoading && movers.length === 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-xs font-bold text-[hsl(142,70%,40%)] mb-2 flex items-center gap-1"><TrendingUp size={12} /> GAINERS</h4>
+                  <div className="space-y-2">
+                    {movers.slice(0, 5).map((coin) => (
+                      <button key={coin.id} onClick={() => fetchNews(coin)} className="w-full flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3 hover:border-primary/40 transition-all text-left">
+                        <img src={coin.image} alt={coin.name} className="h-7 w-7 rounded-full" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-card-foreground truncate">{coin.name}</p>
+                          <p className="text-[10px] text-muted-foreground uppercase">{coin.symbol}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-card-foreground">{formatPrice(coin.current_price)}</p>
+                          <p className="text-[11px] font-semibold text-[hsl(142,70%,40%)]">+{coin.price_change_percentage_24h.toFixed(2)}%</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-destructive mb-2 flex items-center gap-1"><TrendingDown size={12} /> LOSERS</h4>
+                  <div className="space-y-2">
+                    {movers.slice(5).map((coin) => (
+                      <button key={coin.id} onClick={() => fetchNews(coin)} className="w-full flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3 hover:border-destructive/40 transition-all text-left">
+                        <img src={coin.image} alt={coin.name} className="h-7 w-7 rounded-full" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-card-foreground truncate">{coin.name}</p>
+                          <p className="text-[10px] text-muted-foreground uppercase">{coin.symbol}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-card-foreground">{formatPrice(coin.current_price)}</p>
+                          <p className="text-[11px] font-semibold text-destructive">{coin.price_change_percentage_24h.toFixed(2)}%</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* News Dialog */}
