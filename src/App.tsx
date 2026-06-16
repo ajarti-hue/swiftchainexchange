@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import MotionBackground from "@/components/MotionBackground";
+import TopNav from "@/components/TopNav";
 import Index from "./pages/Index";
 import GiftCardTrade from "./pages/GiftCardTrade";
 import CryptoTrade from "./pages/CryptoTrade";
@@ -34,6 +35,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <MotionBackground />
+            <TopNav />
             <EmailVerificationBanner />
             <Routes>
             <Route path="/" element={<Index />} />
