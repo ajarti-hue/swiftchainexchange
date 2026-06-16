@@ -24,15 +24,28 @@ Deno.serve(async (req) => {
 
   try {
     const { trade_id, kind } = await req.json();
-    if (!trade_id) return json({ error: "trade_id required" }, 400);
+    if (!trade_id || typeof trade_id !== "string") return json({ error: "trade_id required" }, 400);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Caller authentication: require a valid Supabase JWT
+    const authHeader = req.headers.get("Authorization") || "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!jwt) return json({ error: "unauthorized" }, 401);
+    const { data: userData, error: userErr } = await supabase.auth.getUser(jwt);
+    if (userErr || !userData?.user) return json({ error: "unauthorized" }, 401);
+    const callerId = userData.user.id;
+
     const { data: order } = await supabase.from("trades").select("*").eq("id", trade_id).maybeSingle();
     if (!order) return json({ error: "trade not found" }, 404);
+
+    // Authorization: caller must own the trade OR be an admin
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: callerId, _role: "admin" });
+    if (order.user_id !== callerId && !isAdmin) return json({ error: "forbidden" }, 403);
+
     if (order.status === "completed" || order.status === "cancelled") return json({ skipped: true });
     if (order.ai_paused) return json({ skipped: true, reason: "ai_paused" });
 
