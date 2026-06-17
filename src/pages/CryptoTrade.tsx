@@ -145,6 +145,7 @@ const CryptoTrade = () => {
             Or continue on WhatsApp
           </button>
         </div>
+        </div>
       </div>
       <Footer />
     </div>
