@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, MessageCircle } from "lucide-react";
+import { ArrowLeft, Send, MessageCircle, Gift } from "lucide-react";
 import { sendToWhatsApp, buildGiftCardMessage } from "@/lib/whatsapp";
 import { createOrder } from "@/lib/createOrder";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
-import logo from "@/assets/logo.jpeg";
+import GiftCardRatesStrip from "@/components/GiftCardRatesStrip";
 
 const GIFT_CARDS = [
   "Amazon", "iTunes/Apple", "Google Play", "Steam", "Walmart",
@@ -54,15 +54,27 @@ const GiftCardTrade = () => {
 
   return (
     <div className="min-h-screen relative">
-      <div className="mx-auto max-w-lg px-4 py-8">
+      <div className="mx-auto max-w-5xl px-4 py-8">
         <button onClick={() => navigate("/")} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> Back to Home
         </button>
 
-        <div className="flex items-center gap-3 mb-8">
-          <img src={logo} alt="SwiftChain X" className="h-10 w-10 rounded-lg object-cover" />
-          <h1 className="font-display text-2xl font-bold text-foreground">Trade Gift Card</h1>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Gift size={22} />
+          </div>
+          <div>
+            <h1 className="font-display text-2xl font-bold text-foreground">Gift Cards</h1>
+            <p className="text-xs text-muted-foreground">Live indicative GHS rates for top brands</p>
+          </div>
         </div>
+
+        <div className="mt-6 mb-10">
+          <GiftCardRatesStrip />
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] max-w-lg mx-auto">
+          <h2 className="font-display text-lg font-bold text-foreground mb-4">Start a Gift Card Order</h2>
 
         <div className="space-y-6">
           {/* Trade Type */}
