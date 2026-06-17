@@ -1,22 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { Gift, Bitcoin, MessageCircle, Shield, User, LogIn, ArrowRight, Settings, TrendingUp, Sparkles } from "lucide-react";
+import { Gift, Bitcoin, MessageCircle, Shield, ArrowRight, TrendingUp, Sparkles } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import CryptoMarketSection from "@/components/CryptoMarketSection";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import AboutSection from "@/components/AboutSection";
-import ReviewsSection from "@/components/ReviewsSection";
-import RewardsBanner from "@/components/RewardsBanner";
 import Footer from "@/components/Footer";
-import ThemeToggle from "@/components/ThemeToggle";
 import Hero3DScene from "@/components/Hero3DScene";
 import TrustStatsBand from "@/components/TrustStatsBand";
-import PriceTicker from "@/components/PriceTicker";
 import Reveal from "@/components/Reveal";
 import { MissionSection, WhyChooseSection, SecurityComplianceSection, PartnersStrip, HowItWorksSection } from "@/components/HomeSections";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo.jpeg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -138,78 +132,51 @@ const Index = () => {
       {/* Trust stats */}
       <TrustStatsBand />
 
-      {/* Live ticker */}
-      <div className="mt-8">
-        <PriceTicker />
-      </div>
-
       {/* Email Verification Alert */}
       <div className="mx-auto max-w-6xl px-4 mt-6 relative z-10 mb-4">
         <EmailVerificationBanner />
       </div>
 
-      {/* Combined Crypto Rates & Market Prices */}
-      <div className="mx-auto max-w-6xl px-4 mb-6">
-        <CryptoMarketSection />
-      </div>
-
       {/* Trade Options */}
       <Reveal className="mx-auto max-w-6xl px-4 py-12">
         <div className="text-center mb-8">
-          <h2 className="font-display text-2xl font-bold text-foreground mb-2">Start Trading Now</h2>
-          <p className="text-muted-foreground text-sm">Choose what you'd like to trade below</p>
+          <h2 className="font-display text-2xl font-bold text-foreground mb-2">What would you like to trade?</h2>
+          <p className="text-muted-foreground text-sm">Pick a category to see live rates and start an order</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-          <button
-            onClick={() => navigate("/gift-card")}
-            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
-          >
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-              <Gift size={28} />
-            </div>
-            <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Trade Gift Card</h3>
-            <p className="text-sm text-muted-foreground">Buy or sell gift cards — Amazon, iTunes, Google Play & more</p>
-          </button>
           <button
             onClick={() => navigate("/crypto")}
             className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
           >
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
               <Bitcoin size={28} />
             </div>
-            <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Trade Crypto</h3>
-            <p className="text-sm text-muted-foreground">Buy or sell Bitcoin, Ethereum, USDT and other cryptocurrencies</p>
+            <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Crypto</h3>
+            <p className="text-sm text-muted-foreground">Buy & sell BTC, ETH, USDT, Perfect Money — live market, top movers, GHS rates.</p>
+          </button>
+          <button
+            onClick={() => navigate("/gift-card")}
+            className="group w-full rounded-xl bg-card p-8 text-left shadow-[var(--shadow-card)] lift-card border border-border"
+          >
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <Gift size={28} />
+            </div>
+            <h3 className="mb-2 font-display text-lg font-bold text-card-foreground">Gift Cards</h3>
+            <p className="text-sm text-muted-foreground">Amazon, iTunes, Steam, Google Play & 15+ more — see GHS rates inside.</p>
           </button>
         </div>
       </Reveal>
 
-      {/* How it works */}
       <HowItWorksSection />
-
-      {/* Partners / Networks */}
       <PartnersStrip />
-
-      {/* Mission */}
       <MissionSection />
-
-      {/* Why Choose */}
       <WhyChooseSection />
-
-      {/* Security & Compliance */}
       <SecurityComplianceSection />
 
-
-      {/* About / Why We Are Special */}
       <div className="bg-card border-y border-border">
         <div className="mx-auto max-w-6xl px-4">
           <AboutSection />
         </div>
-      </div>
-
-      {/* Reviews & Rewards */}
-      <div className="mx-auto max-w-2xl px-4 py-12">
-        <RewardsBanner />
-        <ReviewsSection />
       </div>
 
       {/* WhatsApp Channel CTA */}
