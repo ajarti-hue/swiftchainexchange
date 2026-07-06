@@ -57,7 +57,7 @@ const Auth = () => {
           password,
           options: {
             data: { display_name: displayName || email.split("@")[0] },
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}${next}`,
           },
         });
         if (error) throw error;
@@ -66,7 +66,7 @@ const Auth = () => {
         supabase.auth
           .signInWithOtp({
             email,
-            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+            options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}${next}` },
           })
           .catch(() => {});
 
@@ -74,11 +74,11 @@ const Auth = () => {
           title: "Welcome to SwiftChain Exchange! 🎉",
           description: "We sent a 6-digit code to your email. Verify anytime from the banner.",
         });
-        navigate("/");
+        goNext();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/");
+        goNext();
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -101,7 +101,7 @@ const Auth = () => {
       });
       if (error) throw error;
       toast({ title: "Account verified! ✅", description: "Welcome to SwiftChain X!" });
-      navigate("/");
+      goNext();
     } catch (error: any) {
       toast({ title: "Invalid code", description: error.message, variant: "destructive" });
     } finally {
