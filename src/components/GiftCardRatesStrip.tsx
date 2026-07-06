@@ -13,7 +13,7 @@ const GIFT_CARD_RATES = [
   { brand: "Visa / Vanilla", buy: 12.8, sell: 12.1 },
 ];
 
-const GiftCardRatesStrip = () => {
+const GiftCardRatesStrip = ({ highlightBrand }: { highlightBrand?: string } = {}) => {
   const [mode, setMode] = useState<"buy" | "sell">("sell");
   return (
     <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
