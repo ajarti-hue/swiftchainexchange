@@ -78,11 +78,17 @@ Deno.serve(async (req) => {
       `${i + 1}. ${m.label} (${m.type}) → ${m.details}${m.instructions ? ` — ${m.instructions}` : ""}`
     ).join("\n") || "No payment methods configured.";
 
+    // HTML-escape helper for values embedded into the admin notification email.
+    const esc = (s: unknown) => String(s ?? "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
     // Sanitize user-controlled fields before interpolating them into the AI system
     // prompt (defense against prompt injection). Strip newlines, angle brackets, and
     // bracket sequences that could smuggle new instructions, and cap the length.
     const sanitize = (v: unknown, max = 80) =>
       String(v ?? "")
+
         .replace(/[\r\n]+/g, " ")
         .replace(/[<>]/g, "")
         .replace(/\[\[|\]\]/g, "")
