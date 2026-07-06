@@ -115,12 +115,13 @@ const CryptoMarketSection = ({ defaultTab = "buy" as Tab, tabs: enabledTabs, hig
 
   const formatPrice = (p: number) => p >= 1 ? `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${p.toFixed(4)}`;
 
-  const tabs: { id: Tab; label: string; icon: any }[] = [
+  const allTabs: { id: Tab; label: string; icon: any }[] = [
     { id: "buy", label: "Buy Rates (GHS)", icon: ArrowDownToLine },
     { id: "sell", label: "Sell Rates (GHS)", icon: ArrowUpFromLine },
     { id: "market", label: "Live Market", icon: LineChart },
     { id: "movers", label: "Top Movers", icon: TrendingUp },
   ];
+  const tabs = enabledTabs ? allTabs.filter(t => enabledTabs.includes(t.id)) : allTabs;
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
