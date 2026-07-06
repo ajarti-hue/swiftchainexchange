@@ -166,8 +166,9 @@ GOLDEN RULES — follow them strictly:
       console.error("AI gateway error", aiRes.status, errTxt);
       if (aiRes.status === 429) return json({ error: "rate_limited" }, 429);
       if (aiRes.status === 402) return json({ error: "credits_exhausted" }, 402);
-      return json({ error: "ai_failed", detail: errTxt }, 500);
+      return json({ error: "ai_failed" }, 500);
     }
+
 
     const aiJson = await aiRes.json();
     let reply: string = aiJson.choices?.[0]?.message?.content?.trim() || "Hello! 👋 I'll be right with you.";
