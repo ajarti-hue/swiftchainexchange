@@ -108,7 +108,8 @@ const OrderChat = () => {
           if (m.sender_id !== user.id) {
             try { new Notification("New message on your SwiftChain X order", { body: m.body || "Attachment received" }); } catch {}
             const patch = isAdmin ? { read_by_admin: true } : { read_by_user: true };
-            await supabase.from("chat_messages").update(patch).eq("id", m.id);
+            await supabase.rpc("mark_messages_read", { p_trade_id: id });
+
           }
         })
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `trade_id=eq.${id}` },
