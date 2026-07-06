@@ -1,8 +1,9 @@
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Bitcoin, Gift, User, LogIn, Settings, Menu, X, Shield, Activity } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavLoader } from "@/components/NavLoader";
 import ThemeToggle from "@/components/ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 
