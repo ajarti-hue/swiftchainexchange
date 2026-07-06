@@ -107,8 +107,8 @@ const OrderChat = () => {
           setMessages((prev) => prev.some(p => p.id === m.id) ? prev : [...prev, m]);
           if (m.sender_id !== user.id) {
             try { new Notification("New message on your SwiftChain X order", { body: m.body || "Attachment received" }); } catch {}
-            const patch = isAdmin ? { read_by_admin: true } : { read_by_user: true };
             await supabase.rpc("mark_messages_read", { p_trade_id: id });
+
 
           }
         })
