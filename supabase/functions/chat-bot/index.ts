@@ -237,8 +237,9 @@ GOLDEN RULES — follow them strictly:
     return json({ ok: true, notified: shouldNotify });
   } catch (e) {
     console.error(e);
-    return json({ error: String(e) }, 500);
+    return json({ error: "internal_error" }, 500);
   }
+
 });
 
 function json(b: unknown, status = 200) {
