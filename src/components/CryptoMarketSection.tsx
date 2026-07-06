@@ -32,7 +32,13 @@ const COINS = ["bitcoin", "ethereum", "bitcoin-cash", "ripple", "tether", "litec
 
 type Tab = "buy" | "sell" | "market" | "movers";
 
-const CryptoMarketSection = ({ defaultTab = "buy" as Tab }: { defaultTab?: Tab }) => {
+interface Props {
+  defaultTab?: Tab;
+  tabs?: Tab[];
+  highlightSymbol?: string;
+}
+
+const CryptoMarketSection = ({ defaultTab = "buy" as Tab, tabs: enabledTabs, highlightSymbol }: Props) => {
   const [rates, setRates] = useState<CryptoRate[]>([]);
   const [coins, setCoins] = useState<CoinData[]>([]);
   const [ratesLoading, setRatesLoading] = useState(true);
