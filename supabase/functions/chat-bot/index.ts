@@ -216,15 +216,16 @@ GOLDEN RULES — follow them strictly:
             body: JSON.stringify({
               from: "SwiftChain X <orders@resend.dev>",
               to: [ADMIN_EMAIL],
-              subject: `🟢 Awaiting confirmation — ${order.action} ${order.item}`,
+              subject: `🟢 Awaiting confirmation — ${esc(order.action)} ${esc(order.item)}`,
               html: `<h2>Order ready for confirmation</h2>
-                <p><b>Type:</b> ${order.trade_type}</p>
-                <p><b>Action:</b> ${order.action}</p>
-                <p><b>Item:</b> ${order.item}</p>
-                <p><b>Amount:</b> ${order.amount ?? "n/a"}</p>
-                <p><b>Customer:</b> ${order.customer_email ?? "n/a"}</p>
-                <p><b>Order ID:</b> ${order.id}</p>
-                <p><a href="${waLink}">📲 WhatsApp shortcut</a></p>`,
+                <p><b>Type:</b> ${esc(order.trade_type)}</p>
+                <p><b>Action:</b> ${esc(order.action)}</p>
+                <p><b>Item:</b> ${esc(order.item)}</p>
+                <p><b>Amount:</b> ${esc(order.amount ?? "n/a")}</p>
+                <p><b>Customer:</b> ${esc(order.customer_email ?? "n/a")}</p>
+                <p><b>Order ID:</b> ${esc(order.id)}</p>
+                <p><a href="${esc(waLink)}">📲 WhatsApp shortcut</a></p>`,
+
             }),
           });
         } catch (e) { console.error("resend failed", e); }
