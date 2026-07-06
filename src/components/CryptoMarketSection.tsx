@@ -32,7 +32,13 @@ const COINS = ["bitcoin", "ethereum", "bitcoin-cash", "ripple", "tether", "litec
 
 type Tab = "buy" | "sell" | "market" | "movers";
 
-const CryptoMarketSection = ({ defaultTab = "buy" as Tab }: { defaultTab?: Tab }) => {
+interface Props {
+  defaultTab?: Tab;
+  tabs?: Tab[];
+  highlightSymbol?: string;
+}
+
+const CryptoMarketSection = ({ defaultTab = "buy" as Tab, tabs: enabledTabs, highlightSymbol }: Props) => {
   const [rates, setRates] = useState<CryptoRate[]>([]);
   const [coins, setCoins] = useState<CoinData[]>([]);
   const [ratesLoading, setRatesLoading] = useState(true);
@@ -109,12 +115,13 @@ const CryptoMarketSection = ({ defaultTab = "buy" as Tab }: { defaultTab?: Tab }
 
   const formatPrice = (p: number) => p >= 1 ? `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${p.toFixed(4)}`;
 
-  const tabs: { id: Tab; label: string; icon: any }[] = [
+  const allTabs: { id: Tab; label: string; icon: any }[] = [
     { id: "buy", label: "Buy Rates (GHS)", icon: ArrowDownToLine },
     { id: "sell", label: "Sell Rates (GHS)", icon: ArrowUpFromLine },
     { id: "market", label: "Live Market", icon: LineChart },
     { id: "movers", label: "Top Movers", icon: TrendingUp },
   ];
+  const tabs = enabledTabs ? allTabs.filter(t => enabledTabs.includes(t.id)) : allTabs;
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
@@ -147,15 +154,19 @@ const CryptoMarketSection = ({ defaultTab = "buy" as Tab }: { defaultTab?: Tab }
                   {activeTab === "buy" ? "Rate we sell crypto to you (GHS per $1)" : "Rate we buy crypto from you (GHS per $1)"} · Updated {rates[0] ? new Date(rates[0].updated_at).toLocaleDateString() : "—"}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {rates.map((r) => (
-                    <div key={r.id} className="rounded-lg border border-border bg-muted/30 p-4 text-center hover:border-primary/40 transition-all">
+                  {rates.map((r) => {
+                    const isHi = highlightSymbol && r.crypto_symbol.toUpperCase() === highlightSymbol.toUpperCase();
+                    return (
+                    <div key={r.id} className={`rounded-lg border p-4 text-center transition-all ${isHi ? "border-primary bg-primary/10 scale-105 shadow-[var(--shadow-button)] ring-2 ring-primary/40" : "border-border bg-muted/30 hover:border-primary/40"}`}>
                       <p className="text-sm font-bold text-primary mb-1">{r.crypto_symbol}</p>
                       <p className="text-[10px] text-muted-foreground mb-2 truncate">{r.crypto_name}</p>
                       <p className={`text-lg font-bold font-display ${activeTab === "buy" ? "text-foreground" : "text-[hsl(142,70%,40%)]"}`}>
                         ₵{activeTab === "buy" ? r.buy_rate : r.sell_rate}
                       </p>
+                      {isHi && <p className="mt-1 text-[10px] font-semibold text-primary">Your pick</p>}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}

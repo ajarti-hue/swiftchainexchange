@@ -70,7 +70,7 @@ const GiftCardTrade = () => {
         </div>
 
         <div className="mt-6 mb-10">
-          <GiftCardRatesStrip />
+          <GiftCardRatesStrip highlightBrand={card} />
         </div>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] max-w-lg mx-auto">

@@ -13,7 +13,7 @@ const GIFT_CARD_RATES = [
   { brand: "Visa / Vanilla", buy: 12.8, sell: 12.1 },
 ];
 
-const GiftCardRatesStrip = () => {
+const GiftCardRatesStrip = ({ highlightBrand }: { highlightBrand?: string } = {}) => {
   const [mode, setMode] = useState<"buy" | "sell">("sell");
   return (
     <div className="rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
@@ -40,14 +40,18 @@ const GiftCardRatesStrip = () => {
           Indicative rates · GHS per $1 · {mode === "sell" ? "We buy gift cards from you" : "We sell gift cards to you"}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {GIFT_CARD_RATES.map((r) => (
-            <div key={r.brand} className="rounded-lg border border-border bg-muted/30 p-4 text-center hover:border-primary/40 transition-all">
+          {GIFT_CARD_RATES.map((r) => {
+            const isHi = highlightBrand && r.brand.toLowerCase().includes(highlightBrand.toLowerCase().split(/[/ ]/)[0]);
+            return (
+            <div key={r.brand} className={`rounded-lg border p-4 text-center transition-all ${isHi ? "border-primary bg-primary/10 scale-105 shadow-[var(--shadow-button)] ring-2 ring-primary/40" : "border-border bg-muted/30 hover:border-primary/40"}`}>
               <p className="text-[11px] font-semibold text-card-foreground mb-1 truncate">{r.brand}</p>
               <p className={`text-lg font-bold font-display ${mode === "buy" ? "text-foreground" : "text-[hsl(142,70%,40%)]"}`}>
                 ₵{mode === "buy" ? r.buy.toFixed(1) : r.sell.toFixed(1)}
               </p>
+              {isHi && <p className="mt-1 text-[10px] font-semibold text-primary">Your pick</p>}
             </div>
-          ))}
+            );
+          })}
         </div>
         <a
           href="https://whatsapp.com/channel/0029Vb7LE6T89ingo3wmca3s"
