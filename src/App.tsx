@@ -37,28 +37,31 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <MotionBackground />
-            <TopNav />
-            <EmailVerificationBanner />
-            <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/gift-card" element={<GiftCardTrade />} />
-            <Route path="/crypto" element={<CryptoTrade />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/chat/:id" element={<OrderChat />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/aml-policy" element={<AmlPolicy />} />
-            <Route path="/kyc-policy" element={<KycPolicy />} />
-            <Route path="/risk-disclosure" element={<RiskDisclosure />} />
-            <Route path="/security" element={<SecurityCenter />} />
-            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+            <NavLoaderProvider>
+              <MotionBackground />
+              <TopNav />
+              <EmailVerificationBanner />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/gift-card" element={<GiftCardTrade />} />
+                <Route path="/crypto" element={<CryptoTrade />} />
+                <Route path="/market" element={<LiveMarket />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/chat/:id" element={<OrderChat />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/aml-policy" element={<AmlPolicy />} />
+                <Route path="/kyc-policy" element={<KycPolicy />} />
+                <Route path="/risk-disclosure" element={<RiskDisclosure />} />
+                <Route path="/security" element={<SecurityCenter />} />
+                <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </NavLoaderProvider>
+          </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
     </ThemeProvider>
