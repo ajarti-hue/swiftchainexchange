@@ -74,7 +74,6 @@ const CryptoTrade = () => {
             highlightSymbol={crypto.match(/\(([^)]+)\)/)?.[1] || crypto.split(" ")[0]}
           />
         </div>
-        </div>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] max-w-lg mx-auto">
           <h2 className="font-display text-lg font-bold text-foreground mb-4">Start a Crypto Order</h2>
