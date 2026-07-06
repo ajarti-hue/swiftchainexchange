@@ -78,10 +78,25 @@ Deno.serve(async (req) => {
       `${i + 1}. ${m.label} (${m.type}) → ${m.details}${m.instructions ? ` — ${m.instructions}` : ""}`
     ).join("\n") || "No payment methods configured.";
 
-    const isSell = String(order.action).toLowerCase() === "sell";
+    // Sanitize user-controlled fields before interpolating them into the AI system
+    // prompt (defense against prompt injection). Strip newlines, angle brackets, and
+    // bracket sequences that could smuggle new instructions, and cap the length.
+    const sanitize = (v: unknown, max = 80) =>
+      String(v ?? "")
+        .replace(/[\r\n]+/g, " ")
+        .replace(/[<>]/g, "")
+        .replace(/\[\[|\]\]/g, "")
+        .slice(0, max)
+        .trim();
+    const safeItem = sanitize(order.item);
+    const safeAction = sanitize(order.action, 16);
+    const safeTradeType = sanitize(order.trade_type, 32);
+    const safeCustomerEmail = sanitize(order.customer_email, 200);
+
+    const isSell = safeAction.toLowerCase() === "sell";
 
     const flowGuide = isSell
-      ? `CUSTOMER IS SELLING ${order.item} TO US. Walk through these steps strictly in order, ONE question per message, waiting for the customer to answer before moving on:
+      ? `CUSTOMER IS SELLING ${safeItem} TO US. Walk through these steps strictly in order, ONE question per message, waiting for the customer to answer before moving on:
   Step 1: Greet warmly + confirm what crypto/gift card they want to sell and the USD value.
   Step 2: Ask for their full name (skip if already given).
   Step 3: For gift cards → ask them to upload clear photos of the card front/back + receipt using the 📎 button. For crypto → ask their preferred network (e.g. TRC20/ERC20/BEP20) and wait.
@@ -89,7 +104,7 @@ Deno.serve(async (req) => {
   Step 5: Ask for the Mobile Money number + network (MTN / Vodafone / AirtelTigo) where we should send the GHS.
   Step 6: When you have name + amount + payout MoMo number (and the card photos for gift cards, or wallet network for crypto), summarize everything and END your message with the EXACT token on its own line:
     [[NOTIFY_ADMIN]]`
-      : `CUSTOMER IS BUYING ${order.item} FROM US. Walk through these steps strictly in order, ONE question per message, waiting for the customer to answer before moving on:
+      : `CUSTOMER IS BUYING ${safeItem} FROM US. Walk through these steps strictly in order, ONE question per message, waiting for the customer to answer before moving on:
   Step 1: Greet warmly + confirm what they want to buy and the USD value.
   Step 2: Ask for their full name (skip if already given).
   Step 3: Calculate the GHS they need to PAY using the SELL rate above. Show the math briefly and confirm.
@@ -101,11 +116,11 @@ Deno.serve(async (req) => {
     const systemPrompt = `You are "SwiftBot", a calm, professional, human-like assistant for SwiftChain X (Ghana's trusted crypto & gift-card desk).
 
 ORDER:
-- Type: ${order.trade_type}
-- Action: ${order.action}
-- Item: ${order.item}
-- Amount entered: ${order.amount ?? "not specified"} (USD)
-- Customer email: ${order.customer_email ?? "unknown"}
+- Type: ${safeTradeType}
+- Action: ${safeAction}
+- Item: ${safeItem}
+- Amount entered: ${Number.isFinite(Number(order.amount)) ? Number(order.amount) : "not specified"} (USD)
+- Customer email: ${safeCustomerEmail || "unknown"}
 - Order ID: ${order.id}
 
 LIVE GHS RATES:
@@ -157,7 +172,11 @@ GOLDEN RULES — follow them strictly:
     const aiJson = await aiRes.json();
     let reply: string = aiJson.choices?.[0]?.message?.content?.trim() || "Hello! 👋 I'll be right with you.";
 
-    const shouldNotify = reply.includes("[[NOTIFY_ADMIN]]");
+    // Only treat as a notify trigger if the token appears in the FINAL paragraph
+    // of the AI's reply — prevents earlier user-echoed text from firing notifications.
+    const paragraphs = reply.split(/\n\s*\n/);
+    const finalParagraph = paragraphs[paragraphs.length - 1] ?? "";
+    const shouldNotify = /\[\[NOTIFY_ADMIN\]\]/.test(finalParagraph);
     reply = reply.replace(/\[\[NOTIFY_ADMIN\]\]/g, "").trim();
 
     await supabase.from("chat_messages").insert({
