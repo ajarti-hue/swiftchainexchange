@@ -66,9 +66,14 @@ const CryptoTrade = () => {
           </div>
         </div>
 
-        {/* Market + Rates */}
+        {/* Our GHS Buy / Sell Rates */}
         <div className="mt-6 mb-10">
-          <CryptoMarketSection defaultTab="market" />
+          <CryptoMarketSection
+            defaultTab="buy"
+            tabs={["buy", "sell"]}
+            highlightSymbol={crypto.match(/\(([^)]+)\)/)?.[1] || crypto.split(" ")[0]}
+          />
+        </div>
         </div>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] max-w-lg mx-auto">
