@@ -83,8 +83,8 @@ const OrderChat = () => {
       setMessages((msgs || []) as ChatMessage[]);
       setLoading(false);
 
-      const unreadFilter = admin ? { read_by_admin: true } as const : { read_by_user: true } as const;
-      await supabase.from("chat_messages").update(unreadFilter).eq("trade_id", id).neq("sender_id", user.id);
+      await supabase.rpc("mark_messages_read", { p_trade_id: id });
+
 
       // Already reviewed?
       const { data: existingReview } = await supabase.from("reviews").select("id").eq("user_id", user.id).limit(1);
@@ -107,8 +107,9 @@ const OrderChat = () => {
           setMessages((prev) => prev.some(p => p.id === m.id) ? prev : [...prev, m]);
           if (m.sender_id !== user.id) {
             try { new Notification("New message on your SwiftChain X order", { body: m.body || "Attachment received" }); } catch {}
-            const patch = isAdmin ? { read_by_admin: true } : { read_by_user: true };
-            await supabase.from("chat_messages").update(patch).eq("id", m.id);
+            await supabase.rpc("mark_messages_read", { p_trade_id: id });
+
+
           }
         })
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `trade_id=eq.${id}` },

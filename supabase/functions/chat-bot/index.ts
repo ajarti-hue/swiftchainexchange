@@ -78,11 +78,17 @@ Deno.serve(async (req) => {
       `${i + 1}. ${m.label} (${m.type}) → ${m.details}${m.instructions ? ` — ${m.instructions}` : ""}`
     ).join("\n") || "No payment methods configured.";
 
+    // HTML-escape helper for values embedded into the admin notification email.
+    const esc = (s: unknown) => String(s ?? "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
     // Sanitize user-controlled fields before interpolating them into the AI system
     // prompt (defense against prompt injection). Strip newlines, angle brackets, and
     // bracket sequences that could smuggle new instructions, and cap the length.
     const sanitize = (v: unknown, max = 80) =>
       String(v ?? "")
+
         .replace(/[\r\n]+/g, " ")
         .replace(/[<>]/g, "")
         .replace(/\[\[|\]\]/g, "")
@@ -166,8 +172,9 @@ GOLDEN RULES — follow them strictly:
       console.error("AI gateway error", aiRes.status, errTxt);
       if (aiRes.status === 429) return json({ error: "rate_limited" }, 429);
       if (aiRes.status === 402) return json({ error: "credits_exhausted" }, 402);
-      return json({ error: "ai_failed", detail: errTxt }, 500);
+      return json({ error: "ai_failed" }, 500);
     }
+
 
     const aiJson = await aiRes.json();
     let reply: string = aiJson.choices?.[0]?.message?.content?.trim() || "Hello! 👋 I'll be right with you.";
@@ -215,15 +222,16 @@ GOLDEN RULES — follow them strictly:
             body: JSON.stringify({
               from: "SwiftChain X <orders@resend.dev>",
               to: [ADMIN_EMAIL],
-              subject: `🟢 Awaiting confirmation — ${order.action} ${order.item}`,
+              subject: `🟢 Awaiting confirmation — ${esc(order.action)} ${esc(order.item)}`,
               html: `<h2>Order ready for confirmation</h2>
-                <p><b>Type:</b> ${order.trade_type}</p>
-                <p><b>Action:</b> ${order.action}</p>
-                <p><b>Item:</b> ${order.item}</p>
-                <p><b>Amount:</b> ${order.amount ?? "n/a"}</p>
-                <p><b>Customer:</b> ${order.customer_email ?? "n/a"}</p>
-                <p><b>Order ID:</b> ${order.id}</p>
-                <p><a href="${waLink}">📲 WhatsApp shortcut</a></p>`,
+                <p><b>Type:</b> ${esc(order.trade_type)}</p>
+                <p><b>Action:</b> ${esc(order.action)}</p>
+                <p><b>Item:</b> ${esc(order.item)}</p>
+                <p><b>Amount:</b> ${esc(order.amount ?? "n/a")}</p>
+                <p><b>Customer:</b> ${esc(order.customer_email ?? "n/a")}</p>
+                <p><b>Order ID:</b> ${esc(order.id)}</p>
+                <p><a href="${esc(waLink)}">📲 WhatsApp shortcut</a></p>`,
+
             }),
           });
         } catch (e) { console.error("resend failed", e); }
@@ -235,8 +243,9 @@ GOLDEN RULES — follow them strictly:
     return json({ ok: true, notified: shouldNotify });
   } catch (e) {
     console.error(e);
-    return json({ error: String(e) }, 500);
+    return json({ error: "internal_error" }, 500);
   }
+
 });
 
 function json(b: unknown, status = 200) {

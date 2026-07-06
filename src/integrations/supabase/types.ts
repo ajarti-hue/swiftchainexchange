@@ -274,6 +274,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_messages_read: { Args: { p_trade_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
