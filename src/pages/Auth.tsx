@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ const Auth = () => {
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawNext = searchParams.get("next") ?? "/";
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+  const goNext = () => { window.location.href = next; };
   const { toast } = useToast();
 
   const handleForgotPassword = async () => {
@@ -53,7 +57,7 @@ const Auth = () => {
           password,
           options: {
             data: { display_name: displayName || email.split("@")[0] },
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}${next}`,
           },
         });
         if (error) throw error;
@@ -62,7 +66,7 @@ const Auth = () => {
         supabase.auth
           .signInWithOtp({
             email,
-            options: { shouldCreateUser: false, emailRedirectTo: window.location.origin },
+            options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}${next}` },
           })
           .catch(() => {});
 
@@ -70,11 +74,11 @@ const Auth = () => {
           title: "Welcome to SwiftChain Exchange! 🎉",
           description: "We sent a 6-digit code to your email. Verify anytime from the banner.",
         });
-        navigate("/");
+        goNext();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/");
+        goNext();
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -97,7 +101,7 @@ const Auth = () => {
       });
       if (error) throw error;
       toast({ title: "Account verified! ✅", description: "Welcome to SwiftChain X!" });
-      navigate("/");
+      goNext();
     } catch (error: any) {
       toast({ title: "Invalid code", description: error.message, variant: "destructive" });
     } finally {

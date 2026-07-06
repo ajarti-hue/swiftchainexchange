@@ -22,6 +22,7 @@ import AmlPolicy from "./pages/AmlPolicy";
 import KycPolicy from "./pages/KycPolicy";
 import RiskDisclosure from "./pages/RiskDisclosure";
 import SecurityCenter from "./pages/SecurityCenter";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/kyc-policy" element={<KycPolicy />} />
             <Route path="/risk-disclosure" element={<RiskDisclosure />} />
             <Route path="/security" element={<SecurityCenter />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
