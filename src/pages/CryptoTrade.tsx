@@ -62,7 +62,7 @@ const CryptoTrade = () => {
           </div>
           <div>
             <h1 className="font-display text-2xl font-bold text-foreground">Crypto</h1>
-            <p className="text-xs text-muted-foreground">Live market, top movers & our GHS rates</p>
+            <p className="text-xs text-muted-foreground">Our GHS buy & sell rates — pick your coin to highlight it</p>
           </div>
         </div>
 
