@@ -83,8 +83,8 @@ const OrderChat = () => {
       setMessages((msgs || []) as ChatMessage[]);
       setLoading(false);
 
-      const unreadFilter = admin ? { read_by_admin: true } as const : { read_by_user: true } as const;
-      await supabase.from("chat_messages").update(unreadFilter).eq("trade_id", id).neq("sender_id", user.id);
+      await supabase.rpc("mark_messages_read", { p_trade_id: id });
+
 
       // Already reviewed?
       const { data: existingReview } = await supabase.from("reviews").select("id").eq("user_id", user.id).limit(1);
