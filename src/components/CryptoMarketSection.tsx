@@ -154,15 +154,19 @@ const CryptoMarketSection = ({ defaultTab = "buy" as Tab, tabs: enabledTabs, hig
                   {activeTab === "buy" ? "Rate we sell crypto to you (GHS per $1)" : "Rate we buy crypto from you (GHS per $1)"} · Updated {rates[0] ? new Date(rates[0].updated_at).toLocaleDateString() : "—"}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {rates.map((r) => (
-                    <div key={r.id} className="rounded-lg border border-border bg-muted/30 p-4 text-center hover:border-primary/40 transition-all">
+                  {rates.map((r) => {
+                    const isHi = highlightSymbol && r.crypto_symbol.toUpperCase() === highlightSymbol.toUpperCase();
+                    return (
+                    <div key={r.id} className={`rounded-lg border p-4 text-center transition-all ${isHi ? "border-primary bg-primary/10 scale-105 shadow-[var(--shadow-button)] ring-2 ring-primary/40" : "border-border bg-muted/30 hover:border-primary/40"}`}>
                       <p className="text-sm font-bold text-primary mb-1">{r.crypto_symbol}</p>
                       <p className="text-[10px] text-muted-foreground mb-2 truncate">{r.crypto_name}</p>
                       <p className={`text-lg font-bold font-display ${activeTab === "buy" ? "text-foreground" : "text-[hsl(142,70%,40%)]"}`}>
                         ₵{activeTab === "buy" ? r.buy_rate : r.sell_rate}
                       </p>
+                      {isHi && <p className="mt-1 text-[10px] font-semibold text-primary">Your pick</p>}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
