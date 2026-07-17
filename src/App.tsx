@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import GiftCardTrade from "./pages/GiftCardTrade";
 import CryptoTrade from "./pages/CryptoTrade";
 import LiveMarket from "./pages/LiveMarket";
+import RentNumber from "./pages/RentNumber";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Account from "./pages/Account";
