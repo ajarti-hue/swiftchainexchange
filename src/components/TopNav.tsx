@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bitcoin, Gift, User, LogIn, Settings, Menu, X, Shield, Activity } from "lucide-react";
+import { Bitcoin, Gift, User, LogIn, Settings, Menu, X, Shield, Activity, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,6 +31,7 @@ const TopNav = () => {
   const navItems = [
     { to: "/crypto", label: "Crypto", Icon: Bitcoin, loader: "Loading Crypto" },
     { to: "/gift-card", label: "Gift Cards", Icon: Gift, loader: "Loading Gift Cards" },
+    { to: "/rent-number", label: "Rent Number", Icon: Phone, loader: "Loading Rent-a-Number" },
     { to: "/market", label: "Live Market", Icon: Activity, loader: "Loading Live Market" },
     { to: "/security", label: "Security", Icon: Shield, loader: "Loading Security Center" },
   ];

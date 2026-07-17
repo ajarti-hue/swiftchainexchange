@@ -94,6 +94,75 @@ export type Database = {
         }
         Relationships: []
       }
+      number_rentals: {
+        Row: {
+          cancel_reason: string | null
+          country: string
+          country_name: string
+          created_at: string
+          id: string
+          momo_reference: string | null
+          phone_number: string | null
+          price_ghs: number
+          provider: string
+          provider_expires_at: string | null
+          provider_order_id: string | null
+          service: string
+          service_name: string
+          sms_code: string | null
+          sms_received_at: string | null
+          sms_sender: string | null
+          sms_text: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_reason?: string | null
+          country: string
+          country_name: string
+          created_at?: string
+          id?: string
+          momo_reference?: string | null
+          phone_number?: string | null
+          price_ghs: number
+          provider?: string
+          provider_expires_at?: string | null
+          provider_order_id?: string | null
+          service: string
+          service_name: string
+          sms_code?: string | null
+          sms_received_at?: string | null
+          sms_sender?: string | null
+          sms_text?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_reason?: string | null
+          country?: string
+          country_name?: string
+          created_at?: string
+          id?: string
+          momo_reference?: string | null
+          phone_number?: string | null
+          price_ghs?: number
+          provider?: string
+          provider_expires_at?: string | null
+          provider_order_id?: string | null
+          service?: string
+          service_name?: string
+          sms_code?: string | null
+          sms_received_at?: string | null
+          sms_sender?: string | null
+          sms_text?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           active: boolean

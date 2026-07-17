@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown, MessageCircle, Wallet } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Star, Trash2, CheckCircle, XCircle, Clock, Search, Shield, Pencil, Save, X, ArrowUpDown, MessageCircle, Wallet, Phone } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import PaymentMethodsAdmin from "@/components/PaymentMethodsAdmin";
+import RentalsAdmin from "@/components/RentalsAdmin";
 import logo from "@/assets/logo.jpeg";
 
 interface AdminProfile {
@@ -56,7 +57,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates" | "payments">("trades");
+  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates" | "payments" | "rentals">("trades");
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [trades, setTrades] = useState<AdminTrade[]>([]);
   const [reviews, setReviews] = useState<AdminReview[]>([]);
@@ -200,6 +201,7 @@ const Admin = () => {
     { key: "reviews" as const, label: "Reviews", icon: Star, count: reviews.length },
     { key: "rates" as const, label: "Rates", icon: ArrowUpDown, count: rates.length },
     { key: "payments" as const, label: "Payments", icon: Wallet, count: 0 },
+    { key: "rentals" as const, label: "Rentals", icon: Phone, count: 0 },
   ];
 
   return (
@@ -513,6 +515,11 @@ const Admin = () => {
             {/* Payments Tab */}
             {activeTab === "payments" && (
               <PaymentMethodsAdmin />
+            )}
+
+            {/* Rentals Tab */}
+            {activeTab === "rentals" && (
+              <RentalsAdmin />
             )}
           </>
         )}
