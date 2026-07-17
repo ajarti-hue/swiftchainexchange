@@ -57,7 +57,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates" | "payments">("trades");
+  const [activeTab, setActiveTab] = useState<"trades" | "users" | "reviews" | "rates" | "payments" | "rentals">("trades");
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [trades, setTrades] = useState<AdminTrade[]>([]);
   const [reviews, setReviews] = useState<AdminReview[]>([]);
