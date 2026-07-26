@@ -100,11 +100,59 @@ const CATALOG: Record<string, { name: string; price_ghs: number; category: Cat; 
   other:     { name: 'Other service',  price_ghs: 25, category: 'Other', emoji: '➕' },
 };
 
+// 5sim country codes. Keep in sync with https://5sim.net/ country list.
 const COUNTRIES: Record<string, string> = {
-  any: 'Any country', russia: 'Russia', england: 'United Kingdom', usa: 'USA',
-  ukraine: 'Ukraine', kazakhstan: 'Kazakhstan', philippines: 'Philippines',
-  indonesia: 'Indonesia', india: 'India', vietnam: 'Vietnam', nigeria: 'Nigeria',
-  ghana: 'Ghana', southafrica: 'South Africa',
+  any: 'Any country',
+  afghanistan: 'Afghanistan', albania: 'Albania', algeria: 'Algeria', angola: 'Angola',
+  anguilla: 'Anguilla', antiguaandbarbuda: 'Antigua and Barbuda', argentina: 'Argentina',
+  armenia: 'Armenia', aruba: 'Aruba', australia: 'Australia', austria: 'Austria',
+  azerbaijan: 'Azerbaijan', bahamas: 'Bahamas', bahrain: 'Bahrain', bangladesh: 'Bangladesh',
+  barbados: 'Barbados', belarus: 'Belarus', belgium: 'Belgium', belize: 'Belize',
+  benin: 'Benin', bhutane: 'Bhutan', bih: 'Bosnia and Herzegovina', bolivia: 'Bolivia',
+  botswana: 'Botswana', brazil: 'Brazil', bulgaria: 'Bulgaria', burkinafaso: 'Burkina Faso',
+  burundi: 'Burundi', cambodia: 'Cambodia', cameroon: 'Cameroon', canada: 'Canada',
+  capeverde: 'Cape Verde', caymanislands: 'Cayman Islands', chad: 'Chad', chile: 'Chile',
+  china: 'China', colombia: 'Colombia', comoros: 'Comoros', congo: 'Congo',
+  costarica: 'Costa Rica', croatia: 'Croatia', cyprus: 'Cyprus', czech: 'Czech Republic',
+  denmark: 'Denmark', djibouti: 'Djibouti', dominica: 'Dominica', dominicana: 'Dominican Republic',
+  easttimor: 'East Timor', ecuador: 'Ecuador', egypt: 'Egypt', england: 'United Kingdom',
+  equatorialguinea: 'Equatorial Guinea', eritrea: 'Eritrea', estonia: 'Estonia', ethiopia: 'Ethiopia',
+  finland: 'Finland', france: 'France', frenchguiana: 'French Guiana', gabon: 'Gabon',
+  gambia: 'Gambia', georgia: 'Georgia', germany: 'Germany', ghana: 'Ghana',
+  gibraltar: 'Gibraltar', greece: 'Greece', grenada: 'Grenada', guadeloupe: 'Guadeloupe',
+  guatemala: 'Guatemala', guinea: 'Guinea', guineabissau: 'Guinea-Bissau', guyana: 'Guyana',
+  haiti: 'Haiti', honduras: 'Honduras', hongkong: 'Hong Kong', hungary: 'Hungary',
+  india: 'India', indonesia: 'Indonesia', iran: 'Iran', iraq: 'Iraq',
+  ireland: 'Ireland', israel: 'Israel', italy: 'Italy', ivorycoast: "Côte d'Ivoire",
+  jamaica: 'Jamaica', japan: 'Japan', jordan: 'Jordan', kazakhstan: 'Kazakhstan',
+  kenya: 'Kenya', kyrgyzstan: 'Kyrgyzstan', laos: 'Laos', latvia: 'Latvia',
+  lebanon: 'Lebanon', lesotho: 'Lesotho', liberia: 'Liberia', libya: 'Libya',
+  liechtenstein: 'Liechtenstein', lithuania: 'Lithuania', luxembourg: 'Luxembourg', macau: 'Macau',
+  madagascar: 'Madagascar', malawi: 'Malawi', malaysia: 'Malaysia', maldives: 'Maldives',
+  mali: 'Mali', malta: 'Malta', martinique: 'Martinique', mauritania: 'Mauritania',
+  mauritius: 'Mauritius', mexico: 'Mexico', moldova: 'Moldova', monaco: 'Monaco',
+  mongolia: 'Mongolia', montenegro: 'Montenegro', montserrat: 'Montserrat', morocco: 'Morocco',
+  mozambique: 'Mozambique', myanmar: 'Myanmar', namibia: 'Namibia', nepal: 'Nepal',
+  netherlands: 'Netherlands', newcaledonia: 'New Caledonia', newzealand: 'New Zealand',
+  nicaragua: 'Nicaragua', niger: 'Niger', nigeria: 'Nigeria', northmacedonia: 'North Macedonia',
+  norway: 'Norway', oman: 'Oman', pakistan: 'Pakistan', palestine: 'Palestine',
+  panama: 'Panama', papuanewguinea: 'Papua New Guinea', paraguay: 'Paraguay', peru: 'Peru',
+  philippines: 'Philippines', poland: 'Poland', portugal: 'Portugal', puertorico: 'Puerto Rico',
+  qatar: 'Qatar', reunion: 'Réunion', romania: 'Romania', russia: 'Russia',
+  rwanda: 'Rwanda', saintkittsandnevis: 'Saint Kitts and Nevis', saintlucia: 'Saint Lucia',
+  saintvincentandgrenadines: 'Saint Vincent and the Grenadines', salvador: 'El Salvador',
+  samoa: 'Samoa', saotomeandprincipe: 'São Tomé and Príncipe', saudiarabia: 'Saudi Arabia',
+  senegal: 'Senegal', serbia: 'Serbia', seychelles: 'Seychelles', sierraleone: 'Sierra Leone',
+  singapore: 'Singapore', slovakia: 'Slovakia', slovenia: 'Slovenia', solomonislands: 'Solomon Islands',
+  somalia: 'Somalia', southafrica: 'South Africa', southkorea: 'South Korea', spain: 'Spain',
+  srilanka: 'Sri Lanka', suriname: 'Suriname', swaziland: 'Eswatini', sweden: 'Sweden',
+  switzerland: 'Switzerland', syria: 'Syria', taiwan: 'Taiwan', tajikistan: 'Tajikistan',
+  tanzania: 'Tanzania', thailand: 'Thailand', togo: 'Togo', tonga: 'Tonga',
+  trinidadandtobago: 'Trinidad and Tobago', tunisia: 'Tunisia', turkey: 'Turkey', turkmenistan: 'Turkmenistan',
+  turksandcaicos: 'Turks and Caicos', uganda: 'Uganda', ukraine: 'Ukraine',
+  uae: 'United Arab Emirates', uruguay: 'Uruguay', usa: 'United States', uzbekistan: 'Uzbekistan',
+  venezuela: 'Venezuela', vietnam: 'Vietnam', virginislands: 'Virgin Islands', yemen: 'Yemen',
+  zambia: 'Zambia', zimbabwe: 'Zimbabwe',
 };
 
 function json(body: unknown, status = 200) {
@@ -156,10 +204,11 @@ Deno.serve(async (req) => {
 
     if (action === 'create') {
       const service = String(body.service || '');
-      const country = String(body.country || 'any');
+      const country = String(body.country || '');
       const cat = CATALOG[service];
       if (!cat) return json({ error: 'Unknown service' }, 400);
-      const cname = COUNTRIES[country] ?? 'Any country';
+      if (!country || !COUNTRIES[country]) return json({ error: 'Please choose a country' }, 400);
+      const cname = COUNTRIES[country];
 
       const ref = 'NR-' + Math.random().toString(36).slice(2, 8).toUpperCase();
       const { data, error } = await admin.from('number_rentals').insert({
