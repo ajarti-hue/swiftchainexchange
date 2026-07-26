@@ -41,6 +41,7 @@ const RentNumber = () => {
   const [query, setQuery] = useState("");
   const [selectedService, setSelectedService] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<string>("any");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
   const [creating, setCreating] = useState(false);
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [activeRental, setActiveRental] = useState<Rental | null>(null);
