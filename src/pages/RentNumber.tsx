@@ -150,6 +150,10 @@ const RentNumber = () => {
       toast({ title: "Pick a service", description: "Choose which app you need the code for.", variant: "destructive" });
       return;
     }
+    if (!selectedCountry) {
+      toast({ title: "Pick a country", description: "Choose which country the number should be from.", variant: "destructive" });
+      return;
+    }
     setCreating(true);
     const { data, error } = await supabase.functions.invoke("rent-number", {
       body: { action: "create", service: selectedService, country: selectedCountry },
