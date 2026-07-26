@@ -359,20 +359,52 @@ const RentNumber = () => {
             </div>
 
             <div className="mb-4">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Country (optional)</label>
-              <select
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-                className="mt-2 w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
-              >
-                {countries.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-              <p className="text-[11px] text-muted-foreground mt-1">"Any country" is cheapest and fastest.</p>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+                Country <span className="text-red-500">*</span>
+              </label>
+              <div className="relative mt-2">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search country (e.g. Ghana, USA, India)…"
+                  value={countryQuery}
+                  onChange={(e) => setCountryQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <div className="mt-2 max-h-56 overflow-y-auto rounded-lg border border-border bg-background">
+                {countries
+                  .filter((c) => !countryQuery || c.name.toLowerCase().includes(countryQuery.toLowerCase()))
+                  .map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setSelectedCountry(c.id)}
+                      className={`w-full text-left px-3 py-2 text-sm border-b border-border last:border-0 transition-colors ${
+                        selectedCountry === c.id
+                          ? "bg-primary/10 text-primary font-semibold"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                {countries.filter((c) => !countryQuery || c.name.toLowerCase().includes(countryQuery.toLowerCase())).length === 0 && (
+                  <p className="text-center text-xs text-muted-foreground py-4">No country matches "{countryQuery}"</p>
+                )}
+              </div>
+              {selectedCountry && (
+                <p className="text-[11px] text-primary font-semibold mt-2">
+                  ✓ Selected: {countries.find((c) => c.id === selectedCountry)?.name}
+                </p>
+              )}
+              <p className="text-[11px] text-muted-foreground mt-1">"Any country" is cheapest and fastest — numbers from any available region.</p>
             </div>
 
-            <Button onClick={startRental} disabled={!selectedService || creating} className="w-full" size="lg">
+            <Button onClick={startRental} disabled={!selectedService || !selectedCountry || creating} className="w-full" size="lg">
               {creating ? <><Loader2 size={16} className="animate-spin mr-2"/> Creating…</> :
-                selected ? `Rent for GHS ${selected.price_ghs}` : "Select a service"}
+                !selectedService ? "Select a service" :
+                !selectedCountry ? "Select a country" :
+                `Rent for GHS ${selected?.price_ghs}`}
             </Button>
             <p className="text-[11px] text-center text-muted-foreground mt-3">You'll pay via MoMo. Once we confirm, your number appears here — no page refresh needed.</p>
           </div>
