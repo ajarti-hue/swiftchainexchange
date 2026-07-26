@@ -204,10 +204,11 @@ Deno.serve(async (req) => {
 
     if (action === 'create') {
       const service = String(body.service || '');
-      const country = String(body.country || 'any');
+      const country = String(body.country || '');
       const cat = CATALOG[service];
       if (!cat) return json({ error: 'Unknown service' }, 400);
-      const cname = COUNTRIES[country] ?? 'Any country';
+      if (!country || !COUNTRIES[country]) return json({ error: 'Please choose a country' }, 400);
+      const cname = COUNTRIES[country];
 
       const ref = 'NR-' + Math.random().toString(36).slice(2, 8).toUpperCase();
       const { data, error } = await admin.from('number_rentals').insert({
