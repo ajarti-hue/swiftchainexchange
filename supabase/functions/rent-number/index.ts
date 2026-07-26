@@ -7,28 +7,97 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const ANON = Deno.env.get('SUPABASE_ANON_KEY')!;
 
-// Curated services with GHS prices. Admin can extend later.
-const CATALOG: Record<string, { name: string; price_ghs: number }> = {
-  telegram:  { name: 'Telegram',   price_ghs: 15 },
-  whatsapp:  { name: 'WhatsApp',   price_ghs: 20 },
-  google:    { name: 'Google / Gmail', price_ghs: 12 },
-  facebook:  { name: 'Facebook',   price_ghs: 15 },
-  instagram: { name: 'Instagram',  price_ghs: 15 },
-  twitter:   { name: 'Twitter / X',price_ghs: 15 },
-  tiktok:    { name: 'TikTok',     price_ghs: 15 },
-  signal:    { name: 'Signal',     price_ghs: 15 },
-  discord:   { name: 'Discord',    price_ghs: 12 },
-  uber:      { name: 'Uber',       price_ghs: 20 },
-  bolt:      { name: 'Bolt',       price_ghs: 20 },
-  airbnb:    { name: 'Airbnb',     price_ghs: 20 },
-  amazon:    { name: 'Amazon',     price_ghs: 20 },
-  microsoft: { name: 'Microsoft',  price_ghs: 12 },
-  apple:     { name: 'Apple',      price_ghs: 15 },
-  openai:    { name: 'OpenAI / ChatGPT', price_ghs: 15 },
-  linkedin:  { name: 'LinkedIn',   price_ghs: 15 },
-  binance:   { name: 'Binance',    price_ghs: 20 },
-  paypal:    { name: 'PayPal',     price_ghs: 25 },
-  other:     { name: 'Other service', price_ghs: 25 },
+type Cat =
+  | 'Messaging'
+  | 'Social'
+  | 'Dating'
+  | 'Shopping'
+  | 'Ride & Delivery'
+  | 'Finance & Crypto'
+  | 'Streaming & Gaming'
+  | 'Productivity'
+  | 'Other';
+
+// Curated services with GHS prices and categories.
+const CATALOG: Record<string, { name: string; price_ghs: number; category: Cat; emoji: string }> = {
+  // Messaging
+  telegram:  { name: 'Telegram',       price_ghs: 15, category: 'Messaging', emoji: '✈️' },
+  whatsapp:  { name: 'WhatsApp',       price_ghs: 20, category: 'Messaging', emoji: '💬' },
+  signal:    { name: 'Signal',         price_ghs: 15, category: 'Messaging', emoji: '🔒' },
+  viber:     { name: 'Viber',          price_ghs: 15, category: 'Messaging', emoji: '📞' },
+  wechat:    { name: 'WeChat',         price_ghs: 18, category: 'Messaging', emoji: '💚' },
+  line:      { name: 'LINE',           price_ghs: 15, category: 'Messaging', emoji: '🟢' },
+  kakaotalk: { name: 'KakaoTalk',      price_ghs: 15, category: 'Messaging', emoji: '💛' },
+  discord:   { name: 'Discord',        price_ghs: 12, category: 'Messaging', emoji: '🎮' },
+
+  // Social
+  facebook:  { name: 'Facebook',       price_ghs: 15, category: 'Social', emoji: '📘' },
+  instagram: { name: 'Instagram',      price_ghs: 15, category: 'Social', emoji: '📷' },
+  twitter:   { name: 'Twitter / X',    price_ghs: 15, category: 'Social', emoji: '🐦' },
+  tiktok:    { name: 'TikTok',         price_ghs: 15, category: 'Social', emoji: '🎵' },
+  snapchat:  { name: 'Snapchat',       price_ghs: 15, category: 'Social', emoji: '👻' },
+  linkedin:  { name: 'LinkedIn',       price_ghs: 15, category: 'Social', emoji: '💼' },
+  reddit:    { name: 'Reddit',         price_ghs: 12, category: 'Social', emoji: '👽' },
+  pinterest: { name: 'Pinterest',      price_ghs: 12, category: 'Social', emoji: '📌' },
+  youtube:   { name: 'YouTube',        price_ghs: 12, category: 'Social', emoji: '▶️' },
+
+  // Dating
+  tinder:    { name: 'Tinder',         price_ghs: 20, category: 'Dating', emoji: '🔥' },
+  bumble:    { name: 'Bumble',         price_ghs: 20, category: 'Dating', emoji: '🐝' },
+  hinge:     { name: 'Hinge',          price_ghs: 20, category: 'Dating', emoji: '💘' },
+  badoo:     { name: 'Badoo',          price_ghs: 18, category: 'Dating', emoji: '💜' },
+  grindr:    { name: 'Grindr',         price_ghs: 20, category: 'Dating', emoji: '🌈' },
+  okcupid:   { name: 'OkCupid',        price_ghs: 18, category: 'Dating', emoji: '💗' },
+
+  // Shopping
+  amazon:    { name: 'Amazon',         price_ghs: 20, category: 'Shopping', emoji: '📦' },
+  ebay:      { name: 'eBay',           price_ghs: 18, category: 'Shopping', emoji: '🛒' },
+  aliexpress:{ name: 'AliExpress',     price_ghs: 15, category: 'Shopping', emoji: '🛍️' },
+  shein:     { name: 'SHEIN',          price_ghs: 15, category: 'Shopping', emoji: '👗' },
+  temu:      { name: 'Temu',           price_ghs: 15, category: 'Shopping', emoji: '🎁' },
+  walmart:   { name: 'Walmart',        price_ghs: 18, category: 'Shopping', emoji: '🏪' },
+  etsy:      { name: 'Etsy',           price_ghs: 18, category: 'Shopping', emoji: '🧵' },
+
+  // Ride & Delivery
+  uber:      { name: 'Uber',           price_ghs: 20, category: 'Ride & Delivery', emoji: '🚗' },
+  bolt:      { name: 'Bolt',           price_ghs: 20, category: 'Ride & Delivery', emoji: '⚡' },
+  lyft:      { name: 'Lyft',           price_ghs: 20, category: 'Ride & Delivery', emoji: '🚕' },
+  ubereats:  { name: 'Uber Eats',      price_ghs: 18, category: 'Ride & Delivery', emoji: '🍔' },
+  doordash:  { name: 'DoorDash',       price_ghs: 18, category: 'Ride & Delivery', emoji: '🛵' },
+  grubhub:   { name: 'Grubhub',        price_ghs: 18, category: 'Ride & Delivery', emoji: '🍟' },
+  airbnb:    { name: 'Airbnb',         price_ghs: 20, category: 'Ride & Delivery', emoji: '🏠' },
+
+  // Finance & Crypto
+  paypal:    { name: 'PayPal',         price_ghs: 25, category: 'Finance & Crypto', emoji: '💳' },
+  cashapp:   { name: 'Cash App',       price_ghs: 25, category: 'Finance & Crypto', emoji: '💵' },
+  venmo:     { name: 'Venmo',          price_ghs: 25, category: 'Finance & Crypto', emoji: '💸' },
+  revolut:   { name: 'Revolut',        price_ghs: 25, category: 'Finance & Crypto', emoji: '🏦' },
+  wise:      { name: 'Wise',           price_ghs: 22, category: 'Finance & Crypto', emoji: '🌍' },
+  binance:   { name: 'Binance',        price_ghs: 20, category: 'Finance & Crypto', emoji: '🪙' },
+  coinbase:  { name: 'Coinbase',       price_ghs: 22, category: 'Finance & Crypto', emoji: '🔷' },
+  kucoin:    { name: 'KuCoin',         price_ghs: 20, category: 'Finance & Crypto', emoji: '🟢' },
+  bybit:     { name: 'Bybit',          price_ghs: 20, category: 'Finance & Crypto', emoji: '⚫' },
+
+  // Streaming & Gaming
+  netflix:   { name: 'Netflix',        price_ghs: 20, category: 'Streaming & Gaming', emoji: '🎬' },
+  spotify:   { name: 'Spotify',        price_ghs: 15, category: 'Streaming & Gaming', emoji: '🎧' },
+  twitch:    { name: 'Twitch',         price_ghs: 15, category: 'Streaming & Gaming', emoji: '🎮' },
+  steam:     { name: 'Steam',          price_ghs: 18, category: 'Streaming & Gaming', emoji: '🎯' },
+  epicgames: { name: 'Epic Games',     price_ghs: 18, category: 'Streaming & Gaming', emoji: '🏆' },
+  roblox:    { name: 'Roblox',         price_ghs: 15, category: 'Streaming & Gaming', emoji: '🟥' },
+
+  // Productivity
+  google:    { name: 'Google / Gmail', price_ghs: 12, category: 'Productivity', emoji: '🔍' },
+  microsoft: { name: 'Microsoft',      price_ghs: 12, category: 'Productivity', emoji: '🪟' },
+  apple:     { name: 'Apple ID',       price_ghs: 15, category: 'Productivity', emoji: '🍎' },
+  openai:    { name: 'OpenAI / ChatGPT', price_ghs: 15, category: 'Productivity', emoji: '🤖' },
+  yahoo:     { name: 'Yahoo',          price_ghs: 12, category: 'Productivity', emoji: '📧' },
+  dropbox:   { name: 'Dropbox',        price_ghs: 12, category: 'Productivity', emoji: '📁' },
+  zoom:      { name: 'Zoom',           price_ghs: 12, category: 'Productivity', emoji: '🎥' },
+  notion:    { name: 'Notion',         price_ghs: 12, category: 'Productivity', emoji: '📝' },
+
+  // Other
+  other:     { name: 'Other service',  price_ghs: 25, category: 'Other', emoji: '➕' },
 };
 
 const COUNTRIES: Record<string, string> = {
@@ -78,7 +147,6 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = String(body.action || '');
 
-    // ── list catalog / countries ─────────────────────────────────
     if (action === 'catalog') {
       return json({
         services: Object.entries(CATALOG).map(([k, v]) => ({ id: k, ...v })),
@@ -86,7 +154,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ── create rental (pending payment) ──────────────────────────
     if (action === 'create') {
       const service = String(body.service || '');
       const country = String(body.country || 'any');
@@ -107,7 +174,6 @@ Deno.serve(async (req) => {
       return json({ rental: data });
     }
 
-    // ── admin: confirm payment & provision from 5sim ─────────────
     if (action === 'provision') {
       if (!isAdmin) return json({ error: 'Admin only' }, 403);
       const rentalId = String(body.rental_id || '');
@@ -117,7 +183,6 @@ Deno.serve(async (req) => {
 
       const country = rental.country || 'any';
       const buy = await fivesim(`/user/buy/activation/${country}/any/${rental.service}`);
-      // 5sim response: { id, phone, product, price, status, expires, sms:[] }
       const expiresAt = buy.expires ? new Date(buy.expires).toISOString() : null;
 
       const { data: updated, error: uErr } = await admin.from('number_rentals').update({
@@ -130,7 +195,6 @@ Deno.serve(async (req) => {
       return json({ rental: updated, provider: buy });
     }
 
-    // ── poll for SMS ─────────────────────────────────────────────
     if (action === 'check') {
       const rentalId = String(body.rental_id || '');
       const { data: rental } = await admin.from('number_rentals').select('*').eq('id', rentalId).single();
@@ -158,7 +222,6 @@ Deno.serve(async (req) => {
       return json({ rental, provider: info });
     }
 
-    // ── cancel ────────────────────────────────────────────────────
     if (action === 'cancel') {
       const rentalId = String(body.rental_id || '');
       const { data: rental } = await admin.from('number_rentals').select('*').eq('id', rentalId).single();
