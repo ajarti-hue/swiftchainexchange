@@ -40,7 +40,8 @@ const RentNumber = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [query, setQuery] = useState("");
   const [selectedService, setSelectedService] = useState<string>("");
-  const [selectedCountry, setSelectedCountry] = useState<string>("any");
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [countryQuery, setCountryQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [creating, setCreating] = useState(false);
   const [rentals, setRentals] = useState<Rental[]>([]);
