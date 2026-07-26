@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Phone, Search, Copy, Timer, CheckCircle2, XCircle, ShieldCheck, MessageSquare, ArrowLeft, Loader2 } from "lucide-react";
 
-type Service = { id: string; name: string; price_ghs: number };
+type Service = { id: string; name: string; price_ghs: number; category: string; emoji: string };
 type Country = { id: string; name: string };
 
 interface Rental {
