@@ -116,11 +116,31 @@ const RentNumber = () => {
     return () => { cancelled = true; clearInterval(iv); };
   }, [activeRental?.id, activeRental?.status]);
 
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    services.forEach((s) => set.add(s.category || "Other"));
+    return ["All", ...Array.from(set)];
+  }, [services]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return services;
-    return services.filter((s) => s.name.toLowerCase().includes(q) || s.id.includes(q));
-  }, [query, services]);
+    return services.filter((s) => {
+      const inCat = activeCategory === "All" || s.category === activeCategory;
+      if (!inCat) return false;
+      if (!q) return true;
+      return s.name.toLowerCase().includes(q) || s.id.includes(q);
+    });
+  }, [query, services, activeCategory]);
+
+  const grouped = useMemo(() => {
+    if (activeCategory !== "All") return null;
+    const map: Record<string, Service[]> = {};
+    filtered.forEach((s) => {
+      const c = s.category || "Other";
+      (map[c] ||= []).push(s);
+    });
+    return map;
+  }, [filtered, activeCategory]);
 
   const selected = services.find((s) => s.id === selectedService);
 
