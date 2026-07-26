@@ -282,26 +282,75 @@ const RentNumber = () => {
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pick a service</label>
               <div className="relative mt-2">
                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search Telegram, WhatsApp, Google…" value={query} onChange={(e) => setQuery(e.target.value)} className="pl-9"/>
+                <Input placeholder="Search Telegram, Tinder, Amazon, PayPal…" value={query} onChange={(e) => setQuery(e.target.value)} className="pl-9"/>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-72 overflow-y-auto pr-1 mb-4">
-              {filtered.map((s) => (
+            {/* Category chips */}
+            <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1 scrollbar-none">
+              {categories.map((c) => (
                 <button
-                  key={s.id}
-                  onClick={() => setSelectedService(s.id)}
-                  className={`text-left rounded-xl border p-3 transition-all ${
-                    selectedService === s.id
-                      ? "border-primary bg-primary/10 shadow-[var(--shadow-button)]"
-                      : "border-border bg-background hover:border-primary/40"
+                  key={c}
+                  onClick={() => setActiveCategory(c)}
+                  className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                    activeCategory === c
+                      ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-button)]"
+                      : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
                   }`}
                 >
-                  <p className="text-sm font-semibold text-foreground">{s.name}</p>
-                  <p className="text-xs text-primary font-bold mt-0.5">GHS {s.price_ghs}</p>
+                  {c}
                 </button>
               ))}
-              {filtered.length === 0 && <p className="col-span-full text-center text-sm text-muted-foreground py-6">No services match "{query}"</p>}
+            </div>
+
+            <div className="max-h-[26rem] overflow-y-auto pr-1 mb-4">
+              {grouped ? (
+                Object.entries(grouped).map(([cat, list]) => (
+                  <div key={cat} className="mb-5 last:mb-0">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2 sticky top-0 bg-card/95 backdrop-blur py-1">{cat}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {list.map((s) => (
+                        <button
+                          key={s.id}
+                          onClick={() => setSelectedService(s.id)}
+                          className={`text-left rounded-xl border p-3 transition-all group ${
+                            selectedService === s.id
+                              ? "border-primary bg-primary/10 shadow-[var(--shadow-button)] scale-[1.02]"
+                              : "border-border bg-background hover:border-primary/40 hover:-translate-y-0.5"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl leading-none">{s.emoji}</span>
+                            <p className="text-sm font-semibold text-foreground truncate">{s.name}</p>
+                          </div>
+                          <p className="text-xs text-primary font-bold mt-1">GHS {s.price_ghs}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {filtered.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setSelectedService(s.id)}
+                      className={`text-left rounded-xl border p-3 transition-all ${
+                        selectedService === s.id
+                          ? "border-primary bg-primary/10 shadow-[var(--shadow-button)] scale-[1.02]"
+                          : "border-border bg-background hover:border-primary/40 hover:-translate-y-0.5"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl leading-none">{s.emoji}</span>
+                        <p className="text-sm font-semibold text-foreground truncate">{s.name}</p>
+                      </div>
+                      <p className="text-xs text-primary font-bold mt-1">GHS {s.price_ghs}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {filtered.length === 0 && <p className="text-center text-sm text-muted-foreground py-6">No services match "{query}"</p>}
             </div>
 
             <div className="mb-4">
