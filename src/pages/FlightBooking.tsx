@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"";
+import { useEffect, useState } from "react";
 import { MessageCircle, Send, Plane, MapPin, Clock, Luggage, CalendarDays } from "lucide-react";
 import Footer from "@/components/Footer";
 
