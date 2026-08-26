@@ -236,8 +236,23 @@
   }
   .grid-sweep { animation: grid-sweep 12s linear infinite; }
 
+  @keyframes cloud-drift {
+    from { transform: translateX(-120vw); }
+    to { transform: translateX(120vw); }
+  }
+  .cloud-drift {
+    animation: cloud-drift linear infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.6); }
+  }
+  .pulse-dot {
+    animation: pulse-dot 3s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .coin-spin, .ring-orbit, .ring-orbit-rev, .pulse-soft, .grid-sweep, .float-coin { animation: none !important; }
+    .coin-spin, .ring-orbit, .ring-orbit-rev, .pulse-soft, .grid-sweep, .float-coin, .cloud-drift, .pulse-dot { animation: none !important; }
   }
 }
 
