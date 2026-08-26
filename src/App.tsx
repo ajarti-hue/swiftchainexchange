@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import MotionBackground from "@/components/MotionBackground";
 import TopNav from "@/components/TopNav";
+import ConstructionBanner from "@/components/ConstructionBanner";
 import { NavLoaderProvider } from "@/components/NavLoader";
 import Index from "./pages/Index";
 import GiftCardTrade from "./pages/GiftCardTrade";
@@ -19,6 +20,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import OrderChat from "./pages/OrderChat";
+import FlightBooking from "./pages/FlightBooking";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import AmlPolicy from "./pages/AmlPolicy";
@@ -41,6 +43,7 @@ const App = () => (
             <NavLoaderProvider>
               <MotionBackground />
               <TopNav />
+              <ConstructionBanner />
               <EmailVerificationBanner />
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -53,6 +56,7 @@ const App = () => (
                 <Route path="/account" element={<Account />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/chat/:id" element={<OrderChat />} />
+                <Route path="/flights" element={<FlightBooking />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/aml-policy" element={<AmlPolicy />} />
