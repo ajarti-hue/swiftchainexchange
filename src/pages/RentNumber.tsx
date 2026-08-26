@@ -84,16 +84,14 @@ const RentNumber = () => {
   };
   useEffect(() => { loadRentals(); }, [user]);
 
-  // Realtime updates for this user's rentals
+  // Poll for rental updates (Realtime disabled for this table to keep SMS codes private)
   useEffect(() => {
     if (!user) return;
-    const ch = supabase
-      .channel("number_rentals_" + user.id)
-      .on("postgres_changes", { event: "*", schema: "public", table: "number_rentals", filter: `user_id=eq.${user.id}` }, () => {
-        loadRentals();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    loadRentals();
+    const interval = setInterval(() => {
+      loadRentals();
+    }, 5000);
+    return () => clearInterval(interval);
   }, [user]);
 
   // Ticker for countdown
