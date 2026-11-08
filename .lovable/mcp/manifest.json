@@ -11,15 +11,15 @@
   },
   "mcp": {
     "server": {
-      "name": "swiftchain-x-mcp",
+      "name": "swift-trade-hub-mcp",
       "version": "0.1.0",
-      "title": "SwiftChain X"
+      "title": "Swift Trade Hub"
     },
     "tools": [
       {
         "name": "list_crypto_rates",
         "title": "List crypto GHS rates",
-        "description": "List the current SwiftChain X buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
+        "description": "List the current Swift Trade Hub buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -35,7 +35,7 @@
       {
         "name": "list_payment_methods",
         "title": "List payment methods",
-        "description": "List the active SwiftChain X payment methods (Mobile Money, bank, etc.) customers can pay with.",
+        "description": "List the active Swift Trade Hub payment methods (Mobile Money, bank, etc.) customers can pay with.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -51,7 +51,7 @@
       {
         "name": "get_my_trades",
         "title": "Get my trades",
-        "description": "Return the signed-in SwiftChain X customer's own trades (orders), most recent first.",
+        "description": "Return the signed-in Swift Trade Hub customer's own trades (orders), most recent first.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
