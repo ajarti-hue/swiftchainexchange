@@ -324,37 +324,25 @@ const FlightBooking = () => {
             <span className="font-medium">Instant online search is coming soon — for now we check availability manually and reply in minutes.</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href={ready ? waLink : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!ready}
-              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold text-white transition-all ${
-                ready ? "bg-[hsl(142_70%_45%)] hover:opacity-90 hover:-translate-y-0.5 shadow-lg" : "bg-muted-foreground/40 pointer-events-none"
-              }`}
-            >
-              <MessageCircle size={18} /> Send request on WhatsApp
-            </a>
-            <button
-              onClick={copyAndOpenTelegram}
-              disabled={!ready}
-              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl glass px-6 py-4 text-sm font-bold text-foreground transition-all ${
-                ready ? "hover:bg-card" : "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              <Send size={18} className="text-primary" /> Send on Telegram
-            </button>
-          </div>
+          <button
+            onClick={() => setConfirming(true)}
+            disabled={!ready}
+            className={`w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold transition-all ${
+              ready
+                ? "bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:-translate-y-0.5"
+                : "bg-muted-foreground/40 text-white cursor-not-allowed"
+            }`}
+          >
+            <CheckCircle2 size={18} /> Review booking request
+          </button>
 
           {!ready && (
             <p className="mt-3 text-xs text-muted-foreground text-center">
               Add your full name, date of birth, destination and departure date to continue.
             </p>
           )}
-          <p className="mt-4 text-xs text-muted-foreground text-center">
-            Telegram: your details are copied to the clipboard — just paste and send. Typical response under 10 minutes, 7 days a week.
-          </p>
+          </>
+          )}
         </div>
       </div>
 
