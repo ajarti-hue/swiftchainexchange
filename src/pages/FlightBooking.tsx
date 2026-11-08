@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, Send, Plane, MapPin, Clock, Luggage, CalendarDays, User, Cake, ArrowLeftRight } from "lucide-react";
+import { MessageCircle, Send, Plane, MapPin, Clock, Luggage, CalendarDays, User, Cake, ArrowLeftRight, Pencil, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const WHATSAPP_NUMBER = "233555098098";
@@ -26,6 +26,7 @@ const FlightBooking = () => {
   const [bags, setBags] = useState("1 checked bag");
   const [budget, setBudget] = useState("");
   const [notes, setNotes] = useState("");
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     let raf = 0;
