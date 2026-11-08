@@ -1,4 +1,4 @@
-// SwiftBot — AI assistant for SwiftChain X order chats.
+// SwiftBot — AI assistant for Swift Trade Hub order chats.
 // Asks ONE question at a time, gathers info sequentially, then flags the order
 // as "awaiting_confirmation" so the admin can confirm in the dashboard.
 
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
   Step 6: Once you have name + payment confirmation + wallet/email, summarize everything and END your message with the EXACT token on its own line:
     [[NOTIFY_ADMIN]]`;
 
-    const systemPrompt = `You are "SwiftBot", a calm, professional, human-like assistant for SwiftChain X (Ghana's trusted crypto & gift-card desk).
+    const systemPrompt = `You are "SwiftBot", a calm, professional, human-like assistant for Swift Trade Hub (Ghana's trusted crypto & gift-card desk).
 
 ORDER:
 - Type: ${safeTradeType}
@@ -202,7 +202,7 @@ GOLDEN RULES — follow them strictly:
         .eq("id", trade_id);
 
       const summary = `${order.action?.toUpperCase()} ${order.item} · ${order.amount ?? "?"} · ${order.trade_type}\nCustomer: ${order.customer_email ?? "n/a"}\nOrder: ${order.id}`;
-      const waText = encodeURIComponent(`New SwiftChain X order awaiting confirmation:\n${summary}`);
+      const waText = encodeURIComponent(`New Swift Trade Hub order awaiting confirmation:\n${summary}`);
       const waLink = `https://wa.me/${ADMIN_WHATSAPP}?text=${waText}`;
 
       await supabase.from("chat_messages").insert({
@@ -220,7 +220,7 @@ GOLDEN RULES — follow them strictly:
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
             body: JSON.stringify({
-              from: "SwiftChain X <orders@resend.dev>",
+              from: "Swift Trade Hub <orders@resend.dev>",
               to: [ADMIN_EMAIL],
               subject: `🟢 Awaiting confirmation — ${esc(order.action)} ${esc(order.item)}`,
               html: `<h2>Order ready for confirmation</h2>

@@ -9,7 +9,7 @@ import getMyTrades from "./tools/get-my-trades";
 const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
 
 export default defineMcp({
-  name: "swiftchain-x-mcp",
+  name: "swift-trade-hub-mcp",
   title: "Swift Trade Hub",
   version: "0.1.0",
   instructions:

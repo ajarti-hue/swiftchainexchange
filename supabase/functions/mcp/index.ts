@@ -89,7 +89,7 @@ var get_my_trades_default = defineTool3({
 // src/lib/mcp/index.ts
 var projectRef = "hskhwejndtjcypfhppey";
 var mcp_default = defineMcp({
-  name: "swiftchain-x-mcp",
+  name: "swift-trade-hub-mcp",
   title: "Swift Trade Hub",
   version: "0.1.0",
   instructions: "Tools for Swift Trade Hub \u2014 Ghana's crypto & gift-card trading desk. Use `list_crypto_rates` and `list_payment_methods` for public rate/payment info, and `get_my_trades` to read the signed-in customer's own orders.",
