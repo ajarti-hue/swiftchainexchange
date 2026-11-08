@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MessageCircle, Send, Plane, MapPin, Clock, Luggage, CalendarDays, User, Cake, ArrowLeftRight } from "lucide-react";
+import { MessageCircle, Send, Plane, MapPin, Clock, Luggage, CalendarDays, User, Cake, ArrowLeftRight, Pencil, CheckCircle2 } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const WHATSAPP_NUMBER = "233555098098";
@@ -26,6 +26,7 @@ const FlightBooking = () => {
   const [bags, setBags] = useState("1 checked bag");
   const [budget, setBudget] = useState("");
   const [notes, setNotes] = useState("");
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     let raf = 0;
@@ -148,8 +149,68 @@ const FlightBooking = () => {
           </p>
         </div>
 
-        {/* Booking form */}
+        {/* Booking form / confirmation */}
         <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 sm:p-8 shadow-[var(--shadow-card)]">
+          {confirming ? (
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 size={18} className="text-emerald-500" />
+                <h2 className="font-display text-lg font-bold text-card-foreground">Confirm your booking request</h2>
+              </div>
+              <p className="text-xs text-muted-foreground mb-5">Check everything below, then send it to us on WhatsApp or Telegram.</p>
+
+              <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-border bg-background/60 p-5 mb-6 text-sm">
+                {[
+                  ["Trip type", tripType === "one-way" ? "One way" : "Round trip"],
+                  ["Passenger", fullName],
+                  ["Date of birth", dob],
+                  ["Nationality", nationality || "—"],
+                  ["Passport / ID", passport || "—"],
+                  ["From", from],
+                  ["To", to],
+                  ["Departure", `${departDate}${departTime ? ` at ${departTime}` : ""}`],
+                  ...(tripType === "round-trip" ? [["Return", returnDate || "—"] as const] : []),
+                  ["Travellers", `${adults} adult(s)${children ? `, ${children} child(ren)` : ""}`],
+                  ["Cabin", cabin],
+                  ["Baggage", bags],
+                  ["Budget", budget || "—"],
+                  ["Notes", notes || "—"],
+                ].map(([k, v]) => (
+                  <div key={k as string}>
+                    <dt className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{k}</dt>
+                    <dd className="text-card-foreground font-medium break-words">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold text-white bg-[hsl(142_70%_45%)] hover:opacity-90 hover:-translate-y-0.5 shadow-lg transition-all"
+                >
+                  <MessageCircle size={18} /> Confirm & send on WhatsApp
+                </a>
+                <button
+                  onClick={copyAndOpenTelegram}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl glass px-6 py-4 text-sm font-bold text-foreground hover:bg-card transition-all"
+                >
+                  <Send size={18} className="text-primary" /> Confirm & send on Telegram
+                </button>
+              </div>
+              <button
+                onClick={() => setConfirming(false)}
+                className="mt-4 mx-auto flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Pencil size={12} /> Edit details
+              </button>
+              <p className="mt-3 text-xs text-muted-foreground text-center">
+                Telegram: your details are copied to the clipboard — just paste and send.
+              </p>
+            </div>
+          ) : (
+          <>
           {/* Trip type */}
           <div className="inline-flex rounded-xl bg-muted/60 p-1 mb-6">
             {(["one-way", "round-trip"] as TripType[]).map((t) => (
@@ -263,37 +324,25 @@ const FlightBooking = () => {
             <span className="font-medium">Instant online search is coming soon — for now we check availability manually and reply in minutes.</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href={ready ? waLink : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!ready}
-              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold text-white transition-all ${
-                ready ? "bg-[hsl(142_70%_45%)] hover:opacity-90 hover:-translate-y-0.5 shadow-lg" : "bg-muted-foreground/40 pointer-events-none"
-              }`}
-            >
-              <MessageCircle size={18} /> Send request on WhatsApp
-            </a>
-            <button
-              onClick={copyAndOpenTelegram}
-              disabled={!ready}
-              className={`flex-1 inline-flex items-center justify-center gap-2 rounded-xl glass px-6 py-4 text-sm font-bold text-foreground transition-all ${
-                ready ? "hover:bg-card" : "opacity-50 cursor-not-allowed"
-              }`}
-            >
-              <Send size={18} className="text-primary" /> Send on Telegram
-            </button>
-          </div>
+          <button
+            onClick={() => setConfirming(true)}
+            disabled={!ready}
+            className={`w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold transition-all ${
+              ready
+                ? "bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:-translate-y-0.5"
+                : "bg-muted-foreground/40 text-white cursor-not-allowed"
+            }`}
+          >
+            <CheckCircle2 size={18} /> Review booking request
+          </button>
 
           {!ready && (
             <p className="mt-3 text-xs text-muted-foreground text-center">
               Add your full name, date of birth, destination and departure date to continue.
             </p>
           )}
-          <p className="mt-4 text-xs text-muted-foreground text-center">
-            Telegram: your details are copied to the clipboard — just paste and send. Typical response under 10 minutes, 7 days a week.
-          </p>
+          </>
+          )}
         </div>
       </div>
 
