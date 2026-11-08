@@ -149,8 +149,68 @@ const FlightBooking = () => {
           </p>
         </div>
 
-        {/* Booking form */}
+        {/* Booking form / confirmation */}
         <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-6 sm:p-8 shadow-[var(--shadow-card)]">
+          {confirming ? (
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 size={18} className="text-emerald-500" />
+                <h2 className="font-display text-lg font-bold text-card-foreground">Confirm your booking request</h2>
+              </div>
+              <p className="text-xs text-muted-foreground mb-5">Check everything below, then send it to us on WhatsApp or Telegram.</p>
+
+              <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-border bg-background/60 p-5 mb-6 text-sm">
+                {[
+                  ["Trip type", tripType === "one-way" ? "One way" : "Round trip"],
+                  ["Passenger", fullName],
+                  ["Date of birth", dob],
+                  ["Nationality", nationality || "—"],
+                  ["Passport / ID", passport || "—"],
+                  ["From", from],
+                  ["To", to],
+                  ["Departure", `${departDate}${departTime ? ` at ${departTime}` : ""}`],
+                  ...(tripType === "round-trip" ? [["Return", returnDate || "—"] as const] : []),
+                  ["Travellers", `${adults} adult(s)${children ? `, ${children} child(ren)` : ""}`],
+                  ["Cabin", cabin],
+                  ["Baggage", bags],
+                  ["Budget", budget || "—"],
+                  ["Notes", notes || "—"],
+                ].map(([k, v]) => (
+                  <div key={k as string}>
+                    <dt className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{k}</dt>
+                    <dd className="text-card-foreground font-medium break-words">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold text-white bg-[hsl(142_70%_45%)] hover:opacity-90 hover:-translate-y-0.5 shadow-lg transition-all"
+                >
+                  <MessageCircle size={18} /> Confirm & send on WhatsApp
+                </a>
+                <button
+                  onClick={copyAndOpenTelegram}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl glass px-6 py-4 text-sm font-bold text-foreground hover:bg-card transition-all"
+                >
+                  <Send size={18} className="text-primary" /> Confirm & send on Telegram
+                </button>
+              </div>
+              <button
+                onClick={() => setConfirming(false)}
+                className="mt-4 mx-auto flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Pencil size={12} /> Edit details
+              </button>
+              <p className="mt-3 text-xs text-muted-foreground text-center">
+                Telegram: your details are copied to the clipboard — just paste and send.
+              </p>
+            </div>
+          ) : (
+          <>
           {/* Trip type */}
           <div className="inline-flex rounded-xl bg-muted/60 p-1 mb-6">
             {(["one-way", "round-trip"] as TripType[]).map((t) => (
