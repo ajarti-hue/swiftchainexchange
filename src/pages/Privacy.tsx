@@ -17,7 +17,7 @@ const Privacy = () => {
         <div className="space-y-5 text-sm text-muted-foreground leading-relaxed">
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">1. Information We Collect</h2>
-            <p>When you use SwiftChain X, we only collect the information you voluntarily provide through our trade forms — such as the type of trade, gift card or cryptocurrency selected, and the trade amount. This information is sent directly to our WhatsApp for processing.</p>
+            <p>When you use Swift Trade Hub, we only collect the information you voluntarily provide through our trade forms — such as the type of trade, gift card or cryptocurrency selected, and the trade amount. This information is sent directly to our WhatsApp for processing.</p>
           </section>
 
           <section>
@@ -27,7 +27,7 @@ const Privacy = () => {
 
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">3. Data Storage</h2>
-            <p>SwiftChain X does not operate a database. No personal information is stored on our website. Trade conversations are retained only within WhatsApp as per WhatsApp's own privacy policy.</p>
+            <p>Swift Trade Hub does not operate a database. No personal information is stored on our website. Trade conversations are retained only within WhatsApp as per WhatsApp's own privacy policy.</p>
           </section>
 
           <section>

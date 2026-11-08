@@ -4,7 +4,7 @@ import { defineTool } from "@lovable.dev/mcp-js";
 export default defineTool({
   name: "list_payment_methods",
   title: "List payment methods",
-  description: "List the active SwiftChain X payment methods (Mobile Money, bank, etc.) customers can pay with.",
+  description: "List the active Swift Trade Hub payment methods (Mobile Money, bank, etc.) customers can pay with.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {

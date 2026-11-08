@@ -11,7 +11,7 @@ import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
 var list_crypto_rates_default = defineTool({
   name: "list_crypto_rates",
   title: "List crypto GHS rates",
-  description: "List the current SwiftChain X buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
+  description: "List the current Swift Trade Hub buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {
@@ -35,7 +35,7 @@ import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.0";
 var list_payment_methods_default = defineTool2({
   name: "list_payment_methods",
   title: "List payment methods",
-  description: "List the active SwiftChain X payment methods (Mobile Money, bank, etc.) customers can pay with.",
+  description: "List the active Swift Trade Hub payment methods (Mobile Money, bank, etc.) customers can pay with.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {
@@ -60,7 +60,7 @@ import { z } from "npm:zod@^3.25.76";
 var get_my_trades_default = defineTool3({
   name: "get_my_trades",
   title: "Get my trades",
-  description: "Return the signed-in SwiftChain X customer's own trades (orders), most recent first.",
+  description: "Return the signed-in Swift Trade Hub customer's own trades (orders), most recent first.",
   inputSchema: {
     limit: z.number().int().positive().describe("Maximum number of trades to return (default 20).").optional()
   },
@@ -90,9 +90,9 @@ var get_my_trades_default = defineTool3({
 var projectRef = "hskhwejndtjcypfhppey";
 var mcp_default = defineMcp({
   name: "swiftchain-x-mcp",
-  title: "SwiftChain X",
+  title: "Swift Trade Hub",
   version: "0.1.0",
-  instructions: "Tools for SwiftChain X \u2014 Ghana's crypto & gift-card trading desk. Use `list_crypto_rates` and `list_payment_methods` for public rate/payment info, and `get_my_trades` to read the signed-in customer's own orders.",
+  instructions: "Tools for Swift Trade Hub \u2014 Ghana's crypto & gift-card trading desk. Use `list_crypto_rates` and `list_payment_methods` for public rate/payment info, and `get_my_trades` to read the signed-in customer's own orders.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"

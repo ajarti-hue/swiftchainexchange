@@ -5,7 +5,7 @@ import { z } from "zod";
 export default defineTool({
   name: "get_my_trades",
   title: "Get my trades",
-  description: "Return the signed-in SwiftChain X customer's own trades (orders), most recent first.",
+  description: "Return the signed-in Swift Trade Hub customer's own trades (orders), most recent first.",
   inputSchema: {
     limit: z.number().int().positive().describe("Maximum number of trades to return (default 20).").optional(),
   },

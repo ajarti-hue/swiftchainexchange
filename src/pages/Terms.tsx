@@ -17,17 +17,17 @@ const Terms = () => {
         <div className="space-y-5 text-sm text-muted-foreground leading-relaxed">
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">1. Overview</h2>
-            <p>SwiftChain X facilitates peer-to-peer gift card and cryptocurrency exchanges. By using our services, you agree to these terms. All trades are completed personally via WhatsApp with our verified team.</p>
+            <p>Swift Trade Hub facilitates peer-to-peer gift card and cryptocurrency exchanges. By using our services, you agree to these terms. All trades are completed personally via WhatsApp with our verified team.</p>
           </section>
 
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">2. Eligibility</h2>
-            <p>You must be at least 18 years old to use our services. You are responsible for ensuring that your use of SwiftChain X complies with local laws and regulations in your jurisdiction.</p>
+            <p>You must be at least 18 years old to use our services. You are responsible for ensuring that your use of Swift Trade Hub complies with local laws and regulations in your jurisdiction.</p>
           </section>
 
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">3. How Trades Work</h2>
-            <p>SwiftChain X provides a platform to initiate trade requests. Once you submit your trade details, you will be redirected to WhatsApp where our team will verify and complete the trade manually. Rates are confirmed before any exchange is finalized.</p>
+            <p>Swift Trade Hub provides a platform to initiate trade requests. Once you submit your trade details, you will be redirected to WhatsApp where our team will verify and complete the trade manually. Rates are confirmed before any exchange is finalized.</p>
           </section>
 
           <section>
@@ -42,12 +42,12 @@ const Terms = () => {
 
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">6. Prohibited Activities</h2>
-            <p>You may not use SwiftChain X for money laundering, fraud, or any illegal activity. We reserve the right to refuse service and report suspicious activity to the appropriate authorities.</p>
+            <p>You may not use Swift Trade Hub for money laundering, fraud, or any illegal activity. We reserve the right to refuse service and report suspicious activity to the appropriate authorities.</p>
           </section>
 
           <section>
             <h2 className="font-display text-base font-semibold text-foreground mb-2">7. Limitation of Liability</h2>
-            <p>SwiftChain X is not liable for losses resulting from market volatility, third-party actions, or incorrect information provided by users. Users trade at their own risk.</p>
+            <p>Swift Trade Hub is not liable for losses resulting from market volatility, third-party actions, or incorrect information provided by users. Users trade at their own risk.</p>
           </section>
 
           <section>

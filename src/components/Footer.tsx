@@ -9,8 +9,8 @@ const Footer = () => (
         {/* Brand */}
         <div className="md:col-span-1">
           <div className="flex items-center gap-2 mb-3">
-            <img src={logo} alt="SwiftChain Exchange" className="h-9 w-9 rounded-lg object-cover" />
-            <span className="font-display text-base font-bold text-card-foreground">SwiftChain Exchange</span>
+            <img src={logo} alt="Swift Trade Hub" className="h-9 w-9 rounded-lg object-cover" />
+            <span className="font-display text-base font-bold text-card-foreground">Swift Trade Hub</span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed mb-4">
             Ghana's trusted desk for crypto, Perfect Money and gift card trades. Cedis in,
@@ -75,7 +75,7 @@ const Footer = () => (
 
       <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-[11px] text-muted-foreground text-center sm:text-left">
-          © {new Date().getFullYear()} SwiftChain Exchange. All rights reserved. Trading digital assets involves risk.
+          © {new Date().getFullYear()} Swift Trade Hub. All rights reserved. Trading digital assets involves risk.
         </p>
         <p className="text-[11px] text-muted-foreground">
           Operating in Ghana 🇬🇭 · Aligned with Bank of Ghana digital-asset guidance

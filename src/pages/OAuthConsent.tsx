@@ -77,15 +77,15 @@ export default function OAuthConsent() {
   return (
     <main className="mx-auto max-w-lg px-4 py-12">
       <div className="text-center mb-6">
-        <img src={logo} alt="SwiftChain X" className="mx-auto h-14 w-14 rounded-xl object-cover" />
+        <img src={logo} alt="Swift Trade Hub" className="mx-auto h-14 w-14 rounded-xl object-cover" />
         <h1 className="mt-3 font-display text-2xl font-bold text-foreground">Connect {clientName}</h1>
-        <p className="text-sm text-muted-foreground mt-1">Allow {clientName} to use SwiftChain X tools on your behalf.</p>
+        <p className="text-sm text-muted-foreground mt-1">Allow {clientName} to use Swift Trade Hub tools on your behalf.</p>
       </div>
       <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)] space-y-4">
         <div className="flex items-start gap-3 text-sm">
           <ShieldCheck size={18} className="text-primary shrink-0 mt-0.5" />
           <p className="text-muted-foreground">
-            {clientName} will be able to read your SwiftChain X trade history and public rate/payment
+            {clientName} will be able to read your Swift Trade Hub trade history and public rate/payment
             information as you. It cannot change your account or move funds.
           </p>
         </div>
