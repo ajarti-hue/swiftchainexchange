@@ -19,10 +19,10 @@ const AmlPolicy = () => {
           <p className="text-xs text-muted-foreground mb-6">Last updated: {new Date().toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</p>
 
           <div className="prose prose-sm dark:prose-invert max-w-none space-y-5 text-sm text-card-foreground leading-relaxed">
-            <p>SwiftChain Exchange ("we", "us") is committed to preventing the use of our platform for money laundering, terrorist financing or any other financial crime. This AML Policy outlines the principles and procedures we follow.</p>
+            <p>Swift Trade Hub ("we", "us") is committed to preventing the use of our platform for money laundering, terrorist financing or any other financial crime. This AML Policy outlines the principles and procedures we follow.</p>
 
             <h2 className="font-display text-lg font-bold">1. Scope</h2>
-            <p>This policy applies to all customers, employees and trades conducted through SwiftChain Exchange, in line with the Bank of Ghana's directives on virtual asset service providers and the Anti-Money Laundering Act, 2020 (Act 1044).</p>
+            <p>This policy applies to all customers, employees and trades conducted through Swift Trade Hub, in line with the Bank of Ghana's directives on virtual asset service providers and the Anti-Money Laundering Act, 2020 (Act 1044).</p>
 
             <h2 className="font-display text-lg font-bold">2. Customer Due Diligence (CDD)</h2>
             <ul className="list-disc pl-5 space-y-1">

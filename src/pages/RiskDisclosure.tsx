@@ -19,13 +19,13 @@ const RiskDisclosure = () => {
           <p className="text-xs text-muted-foreground mb-6">Last updated: {new Date().toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</p>
 
           <div className="space-y-5 text-sm text-card-foreground leading-relaxed">
-            <p className="font-semibold">Please read this disclosure carefully before trading on SwiftChain Exchange.</p>
+            <p className="font-semibold">Please read this disclosure carefully before trading on Swift Trade Hub.</p>
 
             <h2 className="font-display text-lg font-bold">1. Market Risk</h2>
             <p>Cryptocurrencies and gift cards can lose value rapidly. Prices can fluctuate significantly within minutes. You may receive back less than you paid.</p>
 
             <h2 className="font-display text-lg font-bold">2. No Guarantee of Returns</h2>
-            <p>SwiftChain Exchange does not provide investment advice. Past performance of any digital asset does not guarantee future results. Only trade what you can afford to lose.</p>
+            <p>Swift Trade Hub does not provide investment advice. Past performance of any digital asset does not guarantee future results. Only trade what you can afford to lose.</p>
 
             <h2 className="font-display text-lg font-bold">3. Irreversible Transactions</h2>
             <p>Crypto transactions are generally irreversible. Sending funds to the wrong wallet address, network or memo may result in permanent loss. Always double-check details before confirming.</p>
@@ -37,10 +37,10 @@ const RiskDisclosure = () => {
             <p>Despite our security measures, no online platform is 100% immune to outages, bugs, network congestion or third-party failures (e.g. Mobile Money operators, blockchain networks).</p>
 
             <h2 className="font-display text-lg font-bold">6. Fraud &amp; Scams</h2>
-            <p>Beware of impersonators. SwiftChain Exchange only communicates from official channels listed on our site. Never share passwords, recovery phrases or one-time codes with anyone.</p>
+            <p>Beware of impersonators. Swift Trade Hub only communicates from official channels listed on our site. Never share passwords, recovery phrases or one-time codes with anyone.</p>
 
             <h2 className="font-display text-lg font-bold">7. Your Responsibility</h2>
-            <p>By using SwiftChain Exchange you confirm that you understand these risks, are of legal age, and are not acting on behalf of an undisclosed third party.</p>
+            <p>By using Swift Trade Hub you confirm that you understand these risks, are of legal age, and are not acting on behalf of an undisclosed third party.</p>
           </div>
         </div>
       </div>

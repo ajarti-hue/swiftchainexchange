@@ -74,7 +74,7 @@ const ResetPassword = () => {
         </button>
 
         <div className="text-center mb-8">
-          <img src={logo} alt="SwiftChain X" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
+          <img src={logo} alt="Swift Trade Hub" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
           <h1 className="font-display text-2xl font-bold text-foreground">Set New Password</h1>
           <p className="text-sm text-muted-foreground mt-1">Enter your new password below</p>
         </div>

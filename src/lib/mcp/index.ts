@@ -9,11 +9,11 @@ import getMyTrades from "./tools/get-my-trades";
 const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
 
 export default defineMcp({
-  name: "swiftchain-x-mcp",
-  title: "SwiftChain X",
+  name: "swift-trade-hub-mcp",
+  title: "Swift Trade Hub",
   version: "0.1.0",
   instructions:
-    "Tools for SwiftChain X — Ghana's crypto & gift-card trading desk. Use `list_crypto_rates` and `list_payment_methods` for public rate/payment info, and `get_my_trades` to read the signed-in customer's own orders.",
+    "Tools for Swift Trade Hub — Ghana's crypto & gift-card trading desk. Use `list_crypto_rates` and `list_payment_methods` for public rate/payment info, and `get_my_trades` to read the signed-in customer's own orders.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

@@ -210,7 +210,7 @@ const Admin = () => {
       <nav className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src={logo} alt="SwiftChain X" className="h-8 w-8 rounded-lg object-cover" />
+            <img src={logo} alt="Swift Trade Hub" className="h-8 w-8 rounded-lg object-cover" />
             <span className="font-display text-sm font-bold text-foreground">Admin Panel</span>
           </button>
           <div className="flex items-center gap-2">

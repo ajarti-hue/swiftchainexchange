@@ -4,7 +4,7 @@ import { defineTool } from "@lovable.dev/mcp-js";
 export default defineTool({
   name: "list_crypto_rates",
   title: "List crypto GHS rates",
-  description: "List the current SwiftChain X buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
+  description: "List the current Swift Trade Hub buy/sell rates (in GHS per USD) for each supported cryptocurrency.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {

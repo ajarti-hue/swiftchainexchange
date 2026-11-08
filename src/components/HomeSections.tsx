@@ -14,7 +14,7 @@ export const MissionSection = () => (
             Making digital finance simple, safe and accessible to every Ghanaian.
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-4">
-            SwiftChain Exchange exists to remove the friction between cedis and the digital
+            Swift Trade Hub exists to remove the friction between cedis and the digital
             economy. Whether you're paying for a service in USDT, cashing out an Amazon gift
             card, or sending Bitcoin to family abroad — we believe it should feel effortless,
             transparent and human.
@@ -57,13 +57,13 @@ export const WhyChooseSection = () => {
       <Reveal className="mx-auto max-w-6xl px-4 py-16">
         <div className="text-center mb-10">
           <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary mb-3">
-            Why SwiftChain Exchange
+            Why Swift Trade Hub
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-foreground mb-3">
             Built different. On purpose.
           </h2>
           <p className="text-muted-foreground text-sm max-w-xl mx-auto">
-            Six reasons traders across Ghana keep coming back to SwiftChain Exchange.
+            Six reasons traders across Ghana keep coming back to Swift Trade Hub.
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">

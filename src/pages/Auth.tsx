@@ -71,7 +71,7 @@ const Auth = () => {
           .catch(() => {});
 
         toast({
-          title: "Welcome to SwiftChain Exchange! 🎉",
+          title: "Welcome to Swift Trade Hub! 🎉",
           description: "We sent a 6-digit code to your email. Verify anytime from the banner.",
         });
         goNext();
@@ -100,7 +100,7 @@ const Auth = () => {
         type: "signup",
       });
       if (error) throw error;
-      toast({ title: "Account verified! ✅", description: "Welcome to SwiftChain X!" });
+      toast({ title: "Account verified! ✅", description: "Welcome to Swift Trade Hub!" });
       goNext();
     } catch (error: any) {
       toast({ title: "Invalid code", description: error.message, variant: "destructive" });
@@ -192,12 +192,12 @@ const Auth = () => {
         </button>
 
         <div className="text-center mb-8">
-          <img src={logo} alt="SwiftChain X" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
+          <img src={logo} alt="Swift Trade Hub" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover shadow-[var(--shadow-card)]" />
           <h1 className="font-display text-2xl font-bold text-foreground">
             {isForgotPassword ? "Reset Password" : isSignUp ? "Create Account" : "Welcome Back"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isForgotPassword ? "Enter your email to receive a reset link" : isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your SwiftChain X account"}
+            {isForgotPassword ? "Enter your email to receive a reset link" : isSignUp ? "Sign up to track your trades & rewards" : "Sign in to your Swift Trade Hub account"}
           </p>
         </div>
 

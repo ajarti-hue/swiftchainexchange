@@ -106,7 +106,7 @@ const OrderChat = () => {
           const m = payload.new as ChatMessage;
           setMessages((prev) => prev.some(p => p.id === m.id) ? prev : [...prev, m]);
           if (m.sender_id !== user.id) {
-            try { new Notification("New message on your SwiftChain X order", { body: m.body || "Attachment received" }); } catch {}
+            try { new Notification("New message on your Swift Trade Hub order", { body: m.body || "Attachment received" }); } catch {}
             await supabase.rpc("mark_messages_read", { p_trade_id: id });
 
 
@@ -193,7 +193,7 @@ const OrderChat = () => {
       trade_id: order.id,
       sender_id: user!.id,
       sender_role: "admin",
-      body: `✅ *Order Confirmed!*\n\nThank you so much for trading with SwiftChain Exchange 🙏. We truly appreciate your trust — feel free to come back anytime for your next trade.\n\nWe'd love to hear about your experience. Would you like to leave a quick review? 😊`,
+      body: `✅ *Order Confirmed!*\n\nThank you so much for trading with Swift Trade Hub 🙏. We truly appreciate your trust — feel free to come back anytime for your next trade.\n\nWe'd love to hear about your experience. Would you like to leave a quick review? 😊`,
     });
   };
 
@@ -244,7 +244,7 @@ const OrderChat = () => {
             <ArrowLeft size={16} />
           </button>
           <button onClick={() => navigate("/")} className="flex items-center gap-2 hover:opacity-80">
-            <img src={logo} alt="SwiftChain X" className="h-8 w-8 rounded-lg object-cover" />
+            <img src={logo} alt="Swift Trade Hub" className="h-8 w-8 rounded-lg object-cover" />
             <div className="text-left">
               <p className="font-display text-sm font-bold text-foreground leading-tight">Order Chat</p>
               <p className="text-[11px] text-muted-foreground leading-tight">
@@ -306,7 +306,7 @@ const OrderChat = () => {
           {messages.map((m) => {
             const mine = m.sender_role !== "bot" && m.sender_id === user!.id && (isAdmin ? m.sender_role === "admin" : m.sender_role === "user");
             const isBot = m.sender_role === "bot";
-            const label = m.sender_role === "admin" ? "SwiftChain Team" : m.sender_role === "bot" ? "🤖 SwiftBot" : "Customer";
+            const label = m.sender_role === "admin" ? "Swift Trade Hub Team" : m.sender_role === "bot" ? "🤖 SwiftBot" : "Customer";
             return (
               <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"} animate-fade-in`}>
                 <div className={`max-w-[78%] rounded-2xl px-3.5 py-2 text-sm shadow-sm ${

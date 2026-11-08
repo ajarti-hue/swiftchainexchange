@@ -41,7 +41,7 @@ const FlightBooking = () => {
 
   const message = useMemo(() => {
     const lines = [
-      "✈️ *Flight Booking Request — SwiftChain X*",
+      "✈️ *Flight Booking Request — Swift Trade Hub*",
       "",
       `Trip type: ${tripType === "one-way" ? "One way" : "Round trip"}`,
       `Passenger: ${fullName || "-"}`,

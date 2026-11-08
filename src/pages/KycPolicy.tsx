@@ -19,7 +19,7 @@ const KycPolicy = () => {
           <p className="text-xs text-muted-foreground mb-6">Last updated: {new Date().toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</p>
 
           <div className="space-y-5 text-sm text-card-foreground leading-relaxed">
-            <p>Know-Your-Customer (KYC) checks help us keep SwiftChain Exchange a safe, fraud-free environment for genuine traders. This policy explains what we collect, when, and why.</p>
+            <p>Know-Your-Customer (KYC) checks help us keep Swift Trade Hub a safe, fraud-free environment for genuine traders. This policy explains what we collect, when, and why.</p>
 
             <h2 className="font-display text-lg font-bold">1. Tiered Verification</h2>
             <ul className="list-disc pl-5 space-y-2">

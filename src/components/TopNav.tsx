@@ -48,11 +48,11 @@ const TopNav = () => {
         {/* Logo = always home */}
         <button
           onClick={() => navigate("/")}
-          aria-label="SwiftChain X — home"
+          aria-label="Swift Trade Hub — home"
           className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity"
         >
-          <img src={logo} alt="SwiftChain X" className="h-9 w-9 rounded-lg object-cover" />
-          <span className="font-display text-base font-bold text-foreground hidden sm:inline">SwiftChain<span className="text-primary">X</span></span>
+          <img src={logo} alt="Swift Trade Hub" className="h-9 w-9 rounded-lg object-cover" />
+          <span className="font-display text-base font-bold text-foreground hidden sm:inline">Swift Trade Hub<span className="text-primary">X</span></span>
         </button>
 
         {/* Center tabs (Coinbase-style) */}

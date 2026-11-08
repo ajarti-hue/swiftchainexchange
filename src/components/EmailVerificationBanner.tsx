@@ -108,7 +108,7 @@ const EmailVerificationBanner = () => {
       setOpen(false);
       toast({
         title: "✅ Email verified!",
-        description: "Welcome to SwiftChain Exchange.",
+        description: "Welcome to Swift Trade Hub.",
       });
     } catch (e: any) {
       toast({ title: "Invalid code", description: e.message, variant: "destructive" });

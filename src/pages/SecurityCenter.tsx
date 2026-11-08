@@ -37,7 +37,7 @@ const SecurityCenter = () => {
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-black text-foreground mb-3">Your safety is our product.</h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
-            SwiftChain Exchange combines modern application security with human review on every trade.
+            Swift Trade Hub combines modern application security with human review on every trade.
             Here's exactly what's protecting your account today, and what's coming next.
           </p>
         </div>
@@ -79,7 +79,7 @@ const SecurityCenter = () => {
           <div className="flex items-start gap-3 mb-3">
             <AlertTriangle className="text-amber-500 shrink-0 mt-0.5" size={18} />
             <p className="text-sm text-foreground font-semibold">
-              SwiftChain Exchange will <span className="underline">never</span> ask for your password, recovery codes,
+              Swift Trade Hub will <span className="underline">never</span> ask for your password, recovery codes,
               or full wallet seed phrase. Anyone who does is impersonating us.
             </p>
           </div>
